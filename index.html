@@ -113,10 +113,21 @@
             gap: 20px;
         }
         
+        /* Pricing grid */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
         @media (max-width: 640px) {
             .gallery-grid {
                 grid-template-columns: 1fr;
                 gap: 15px;
+            }
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
             }
         }
         
@@ -174,6 +185,51 @@
             color: #ffffff;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
+        
+        /* Pricing card styles - equal treatment for all */
+        .pricing-card {
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            padding: 24px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .pricing-card h3 {
+            color: #b8860b;
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .pricing-card .price {
+            color: #ffffff;
+            font-size: 1.75rem;
+            font-weight: bold;
+            margin-bottom: 16px;
+        }
+        
+        .pricing-card ul {
+            flex-grow: 1;
+            margin-bottom: 16px;
+        }
+        
+        .pricing-card li {
+            color: #d1d5db;
+            font-size: 0.875rem;
+            margin-bottom: 6px;
+            padding-left: 8px;
+            position: relative;
+        }
+        
+        .pricing-card li:before {
+            content: "•";
+            color: #b8860b;
+            position: absolute;
+            left: 0;
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-white">
@@ -202,6 +258,7 @@
                 <nav class="hidden lg:flex space-x-8">
                     <a href="#gioi-thieu" class="hover-gold focus-visible">Giới thiệu</a>
                     <a href="#dich-vu" class="hover-gold focus-visible">Dịch vụ</a>
+                    <a href="#bang-gia" class="hover-gold focus-visible">Bảng giá</a>
                     <a href="#gallery" class="hover-gold focus-visible">Hình ảnh</a>
                     <a href="#lien-he" class="hover-gold focus-visible">Liên hệ</a>
                     <a href="tel:0785877755" class="bg-gold text-black px-4 py-2 rounded hover-bg-gold focus-visible">
@@ -217,6 +274,7 @@
         <div class="px-6">
             <a href="#gioi-thieu" class="block py-4 border-b border-gray-700 hover-gold focus-visible">Giới thiệu</a>
             <a href="#dich-vu" class="block py-4 border-b border-gray-700 hover-gold focus-visible">Dịch vụ</a>
+            <a href="#bang-gia" class="block py-4 border-b border-gray-700 hover-gold focus-visible">Bảng giá</a>
             <a href="#gallery" class="block py-4 border-b border-gray-700 hover-gold focus-visible">Hình ảnh</a>
             <a href="#lien-he" class="block py-4 border-b border-gray-700 hover-gold focus-visible">Liên hệ</a>
             <a href="tel:0785877755" class="block py-4 text-gold font-bold focus-visible">
@@ -379,34 +437,194 @@
                         <p class="text-gray-300 text-sm">Thủ tục, vận chuyển, trang trí, âm nhạc, hoa...</p>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <!-- Bảng giá Section -->
+        <section id="bang-gia" class="bg-gray-900 section-padding">
+            <div class="container-safe">
+                <h2 class="text-section font-bold text-gold mb-8 text-center">BẢNG GIÁ DỊCH VỤ AN TÁNG</h2>
+                <p class="text-center text-gray-300 mb-8">8 gói dịch vụ từ cơ bản đến cao cấp, phù hợp với mọi điều kiện kinh tế</p>
+                
+                <div class="pricing-grid">
+                    <!-- Gói 1: Phúc Bảo -->
+                    <div class="pricing-card">
+                        <h3>Gói Phúc Bảo</h3>
+                        <div class="price">39 triệu VNĐ</div>
+                        <ul>
+                            <li>Quan tài MDF (quai) chất lượng cao</li>
+                            <li>Trang trí Linh đường mẫu tiêu chuẩn</li>
+                            <li>Đội khiên quan 8 người</li>
+                            <li>Đội liệm ít người</li>
+                            <li>Tối đa 3 khung rạp (1 khung rạp 3x4m)</li>
+                            <li>Đáp ứng đồ tang đủ dùng cho gia đình</li>
+                            <li>Nhạc trống truyền thống</li>
+                            <li>1 xe khách 29 chỗ cho gia đình</li>
+                            <li>Xe chuyên dụng: Xe rồng, xe phật, xe trống, xe đội kèn</li>
+                        </ul>
+                        <a href="tel:0785877755" class="bg-gold text-black px-4 py-2 rounded text-center font-bold hover-bg-gold focus-visible">
+                            Tư vấn gói này
+                        </a>
+                    </div>
+
+                    <!-- Gói 2: Bảo An -->
+                    <div class="pricing-card">
+                        <h3>Gói Bảo An</h3>
+                        <div class="price">42 triệu VNĐ</div>
+                        <ul>
+                            <li>Quan tài MDF (đính cẩn) cao cấp hơn</li>
+                            <li>Trang trí Linh đường mẫu tiêu chuẩn</li>
+                            <li>Đội khiên quan 8 người</li>
+                            <li>Đội liệm ít người</li>
+                            <li>Tối đa 3 khung rạp (1 khung rạp 3x4m)</li>
+                            <li>Đáp ứng đồ tang đủ dùng cho gia đình</li>
+                            <li>Nhạc trống truyền thống</li>
+                            <li>1 xe khách 29 chỗ</li>
+                            <li>Xe chuyên dụng đầy đủ</li>
+                        </ul>
+                        <a href="tel:0785877755" class="bg-gold text-black px-4 py-2 rounded text-center font-bold hover-bg-gold focus-visible">
+                            Tư vấn gói này
+                        </a>
+                    </div>
+
+                    <!-- Gói 3: Ngọc Ân -->
+                    <div class="pricing-card">
+                        <h3>Gói Ngọc Ân</h3>
+                        <div class="price">55 triệu VNĐ</div>
+                        <ul>
+                            <li>Quan tài MDF cao cấp/giả gỗ</li>
+                            <li>Trang trí Linh đường mẫu cao cấp</li>
+                            <li>Đội khiên quan 8 người</li>
+                            <li>Đội liệm ít người</li>
+                            <li>Tối đa 3 khung rạp (1 khung rạp 3x4m)</li>
+                            <li>Đáp ứng đồ tang đủ dùng cho gia đình</li>
+                            <li>Nhạc trống chuyên nghiệp</li>
+                            <li>1 xe khách 29 chỗ</li>
+                            <li>Xe chuyên dụng hoàn chỉnh</li>
+                        </ul>
+                        <a href="tel:0785877755" class="bg-gold text-black px-4 py-2 rounded text-center font-bold hover-bg-gold focus-visible">
+                            Tư vấn gói này
+                        </a>
+                    </div>
+
+                    <!-- Gói 4: Thiên Ân -->
+                    <div class="pricing-card">
+                        <h3>Gói Thiên Ân</h3>
+                        <div class="price">63 triệu VNĐ</div>
+                        <ul>
+                            <li>Quan tài gỗ Xà Cừ cao cấp</li>
+                            <li>Trang trí Linh đường mẫu cao cấp</li>
+                            <li>Đội khiên quan 12 người</li>
+                            <li>Đội liệm đông đảo</li>
+                            <li>Tối đa 4 khung rạp (1 khung rạp 3x4m)</li>
+                            <li>Đáp ứng đồ tang đủ dùng cho gia đình</li>
+                            <li>Nhạc trống chuyên nghiệp</li>
+                            <li>1 xe khách 29 chỗ</li>
+                            <li>Xe chuyên dụng hoàn chỉnh</li>
+                        </ul>
+                        <a href="tel:0785877755" class="bg-gold text-black px-4 py-2 rounded text-center font-bold hover-bg-gold focus-visible">
+                            Tư vấn gói này
+                        </a>
+                    </div>
+
+                    <!-- Gói 5: Ngọc Bảo -->
+                    <div class="pricing-card">
+                        <h3>Gói Ngọc Bảo</h3>
+                        <div class="price">75 triệu VNĐ</div>
+                        <ul>
+                            <li>Quan tài gỗ Căm Xe tự nhiên</li>
+                            <li>Trang trí Linh đường mẫu cao cấp</li>
+                            <li>Đội khiên quan 12 người</li>
+                            <li>Đội liệm đông đảo</li>
+                            <li>Tối đa 4 khung rạp (1 khung rạp 3x4m)</li>
+                            <li>Đáp ứng đồ tang đủ dùng cho gia đình</li>
+                            <li>Nhạc trống chuyên nghiệp</li>
+                            <li>1 xe khách 29 chỗ</li>
+                            <li>Xe chuyên dụng đầy đủ</li>
+                        </ul>
+                        <a href="tel:0785877755" class="bg-gold text-black px-4 py-2 rounded text-center font-bold hover-bg-gold focus-visible">
+                            Tư vấn gói này
+                        </a>
+                    </div>
+
+                    <!-- Gói 6: Ngọc Hoa -->
+                    <div class="pricing-card">
+                        <h3>Gói Ngọc Hoa</h3>
+                        <div class="price">110 triệu VNĐ</div>
+                        <ul>
+                            <li>Quan tài gỗ Hương thơm tự nhiên</li>
+                            <li>Trang trí Linh đường mẫu đặc biệt</li>
+                            <li>Đội khiên quan 16 người</li>
+                            <li>Đội liệm đông đảo</li>
+                            <li>Tối đa 6 khung rạp (1 khung rạp 3x4m)</li>
+                            <li>Đáp ứng đồ tang đủ dùng cho gia đình</li>
+                            <li>Đội kèn tây + trống chuyên nghiệp</li>
+                            <li>2 xe khách 29 chỗ</li>
+                            <li>Xe chuyên dụng đầy đủ</li>
+                        </ul>
+                        <a href="tel:0785877755" class="bg-gold text-black px-4 py-2 rounded text-center font-bold hover-bg-gold focus-visible">
+                            Tư vấn gói này
+                        </a>
+                    </div>
+
+                    <!-- Gói 7: Ngọc Phúc -->
+                    <div class="pricing-card">
+                        <h3>Gói Ngọc Phúc</h3>
+                        <div class="price">110 triệu VNĐ</div>
+                        <ul>
+                            <li>Quan tài gỗ Trai cao cấp</li>
+                            <li>Trang trí Linh đường mẫu đặc biệt</li>
+                            <li>Đội khiên quan 16 người</li>
+                            <li>Đội liệm đông đảo</li>
+                            <li>Tối đa 6 khung rạp (1 khung rạp 3x4m)</li>
+                            <li>Đáp ứng đồ tang đủ dùng cho gia đình</li>
+                            <li>Kèn tây + trống chuyên nghiệp</li>
+                            <li>2 xe khách 29 chỗ</li>
+                            <li>Xe chuyên dụng: Xe rồng, xe phật, xe trống, xe đội kèn</li>
+                        </ul>
+                        <a href="tel:0785877755" class="bg-gold text-black px-4 py-2 rounded text-center font-bold hover-bg-gold focus-visible">
+                            Tư vấn gói này
+                        </a>
+                    </div>
+
+                    <!-- Gói 8: Phúc An -->
+                    <div class="pricing-card">
+                        <h3>Gói Phúc An</h3>
+                        <div class="price">115 triệu VNĐ</div>
+                        <ul>
+                            <li>Quan tài gỗ Gõ đỏ quý hiếm</li>
+                            <li>Trang trí Linh đường mẫu đặc biệt</li>
+                            <li>Đội khiên quan 16 người</li>
+                            <li>Đội liệm đông đảo nhất</li>
+                            <li>Tối đa 6 khung rạp (1 khung rạp 3x4m)</li>
+                            <li>Đáp ứng đồ tang đủ dùng cho gia đình</li>
+                            <li>Kèn tây + trống cao cấp</li>
+                            <li>2 xe khách 29 chỗ</li>
+                            <li>Xe chuyên dụng hoàn chỉnh</li>
+                        </ul>
+                        <a href="tel:0785877755" class="bg-gold text-black px-4 py-2 rounded text-center font-bold hover-bg-gold focus-visible">
+                            Tư vấn gói này
+                        </a>
+                    </div>
+                </div>
                 
                 <div class="mt-12 text-center">
-                    <h3 class="text-xl font-bold text-gold mb-4">GÓI DỊCH VỤ PHỔ BIẾN</h3>
-                    <div class="grid md:grid-cols-3 gap-6">
-                        <div class="bg-gray-900 p-6 rounded-lg border border-gold">
-                            <h4 class="text-lg font-bold text-gold mb-2">Gói Phúc Bảo</h4>
-                            <p class="text-2xl font-bold text-white mb-2">39 triệu VNĐ</p>
-                            <p class="text-gray-300 text-sm">Quan tài MDF, 8 người khiên quan, 3 khung rạp</p>
-                        </div>
-                        
-                        <div class="bg-gold p-6 rounded-lg text-black">
-                            <h4 class="text-lg font-bold mb-2">Gói Ngọc Phúc</h4>
-                            <p class="text-2xl font-bold mb-2">110 triệu VNĐ</p>
-                            <p class="text-sm">Quan tài gỗ Trai, 16 người, 6 khung rạp - PHỔ BIẾN</p>
-                        </div>
-                        
-                        <div class="bg-gray-900 p-6 rounded-lg border border-gold">
-                            <h4 class="text-lg font-bold text-gold mb-2">Gói Phúc An</h4>
-                            <p class="text-2xl font-bold text-white mb-2">115 triệu VNĐ</p>
-                            <p class="text-gray-300 text-sm">Quan tài gỗ Gõ đỏ, cao cấp nhất</p>
-                        </div>
+                    <h3 class="text-xl font-bold text-gold mb-4">CAM KẾT GIÁ MINH BẠCH</h3>
+                    <p class="text-gray-300 mb-6">Tất cả giá đã bao gồm toàn bộ dịch vụ. Không phát sinh thêm chi phí.</p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <a href="tel:0785877755" class="bg-gold text-black px-8 py-4 rounded-lg font-bold hover-bg-gold focus-visible">
+                            <i class="fas fa-phone mr-2"></i>Gọi tư vấn: 0785877755
+                        </a>
+                        <a href="sms:0785877755" class="border border-gold text-gold px-8 py-4 rounded-lg font-bold hover-bg-gold hover:text-black focus-visible">
+                            <i class="fas fa-comments mr-2"></i>Nhắn tin báo giá
+                        </a>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Gallery Section -->
-        <section id="gallery" class="bg-gray-900 section-padding">
+        <section id="gallery" class="bg-gray-800 section-padding">
             <div class="container-safe">
                 <h2 class="text-section font-bold text-gold mb-8 text-center">HÌNH ẢNH DỊCH VỤ</h2>
                 <div class="gallery-grid">
@@ -440,12 +658,27 @@
                              alt="Đội khiêng quan chuyên nghiệp" 
                              loading="lazy">
                     </div>
+                    <div class="gallery-item">
+                        <img src="https://page1.genspark.site/v1/base64_upload/7117476d98aa6ab816e0ad6ab9dc16bd" 
+                             alt="Linh đường tại nhà" 
+                             loading="lazy">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://page1.genspark.site/v1/base64_upload/194f79f7a5ba07877e1b856278a5aefe" 
+                             alt="Không gian trang trọng" 
+                             loading="lazy">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://page1.genspark.site/v1/base64_upload/51c2f1c0679b819740b914e17457f295" 
+                             alt="Linh đường trong phòng" 
+                             loading="lazy">
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- Liên hệ Section -->
-        <section id="lien-he" class="bg-gray-800 section-padding">
+        <section id="lien-he" class="bg-gray-900 section-padding">
             <div class="container-safe">
                 <h2 class="text-section font-bold text-gold mb-8 text-center">THÔNG TIN LIÊN HỆ</h2>
                 <div class="grid lg:grid-cols-2 gap-8">
@@ -497,7 +730,7 @@
         </section>
 
         <!-- Cam kết Section -->
-        <section class="bg-gray-900 section-padding">
+        <section class="bg-gray-800 section-padding">
             <div class="container-safe">
                 <h2 class="text-section font-bold text-gold mb-8 text-center">CAM KẾT DỊCH VỤ</h2>
                 <div class="grid md:grid-cols-2 gap-8">
