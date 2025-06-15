@@ -3,516 +3,864 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AKPR's Gallery - Photo Grid</title>
+    <title>Dịch Vụ Tang Lễ Yên Bình - Trọn Vẹn Nghĩa Tình</title>
+    <link rel="icon" type="image/png" href="https://page1.genspark.site/v1/base64_upload/ebe6f7de4d8a1b4044b6f3afea8635ba">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        .gallery-item {
-            aspect-ratio: 1;
-            overflow: hidden;
-            position: relative;
-            cursor: pointer;
+        :root {
+            --gold: #b8860b;
+            --dark: #1a1a1a;
+            --light-gold: #d4af37;
+        }
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .bg-gold { background-color: var(--gold); }
+        .bg-dark { background-color: var(--dark); }
+        .text-gold { color: var(--gold); }
+        .text-dark { color: var(--dark); }
+        .border-gold { border-color: var(--gold); }
+        
+        .btn-gold {
+            background: linear-gradient(135deg, var(--gold), var(--light-gold));
+            color: white;
             transition: all 0.3s ease;
         }
         
-        .gallery-item:hover {
+        .btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(184, 134, 11, 0.3);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .hover-scale {
+            transition: transform 0.3s ease;
+        }
+        
+        .hover-scale:hover {
             transform: scale(1.05);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
         
-        .gallery-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: all 0.3s ease;
+        .gradient-overlay {
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(184, 134, 11, 0.1));
         }
         
-        .gallery-item:hover img {
-            transform: scale(1.1);
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            cursor: pointer;
         }
         
-        .gallery-overlay {
+        .gallery-item::before {
+            content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(45deg, rgba(0,0,0,0.5), transparent);
+            background: linear-gradient(135deg, rgba(184, 134, 11, 0.8), rgba(26, 26, 26, 0.6));
             opacity: 0;
             transition: opacity 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            z-index: 1;
         }
         
-        .gallery-item:hover .gallery-overlay {
+        .gallery-item:hover::before {
             opacity: 1;
         }
         
-        .lightbox {
-            display: none;
-            position: fixed;
-            top: 0;
+        .gallery-content {
+            position: absolute;
+            bottom: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
+            right: 0;
+            padding: 1.5rem;
+            color: white;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            z-index: 2;
+        }
+        
+        .gallery-item:hover .gallery-content {
+            transform: translateY(0);
+        }
+        
+        .sticky-header {
+            position: sticky;
+            top: 0;
             z-index: 1000;
-            align-items: center;
-            justify-content: center;
+            backdrop-filter: blur(10px);
+            background: rgba(26, 26, 26, 0.95);
         }
         
-        .lightbox.active {
-            display: flex;
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
         }
         
-        .lightbox-content {
-            max-width: 90vw;
-            max-height: 90vh;
-            position: relative;
+        .mobile-menu.active {
+            transform: translateX(0);
         }
         
-        .lightbox-image {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
-        
-        .lightbox-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            font-size: 24px;
-            padding: 15px 20px;
-            cursor: pointer;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-        }
-        
-        .lightbox-nav:hover {
-            background: rgba(255,255,255,0.4);
-        }
-        
-        .lightbox-prev {
-            left: -60px;
-        }
-        
-        .lightbox-next {
-            right: -60px;
-        }
-        
-        .lightbox-close {
-            position: absolute;
-            top: -50px;
-            right: -10px;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 30px;
-            cursor: pointer;
-        }
-        
-        .filter-btn {
-            transition: all 0.3s ease;
-        }
-        
-        .filter-btn.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        
-        .lazy-image {
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .lazy-image.loaded {
-            opacity: 1;
-        }
-        
-        .instructions {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-        }
-        
-        .gallery-grid {
-            display: grid;
-            gap: 15px;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        }
-        
-        @media (max-width: 768px) {
-            .gallery-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
-            }
-            
-            .lightbox-nav {
-                font-size: 18px;
-                padding: 10px 15px;
-            }
-            
-            .lightbox-prev {
-                left: -45px;
-            }
-            
-            .lightbox-next {
-                right: -45px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .gallery-grid {
-                grid-template-columns: 1fr;
-            }
+        .hero-bg {
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(184, 134, 11, 0.1)),
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="%23b8860b" opacity="0.1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grain)"/></svg>');
         }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-gray-50">
     <!-- Header -->
-    <header class="bg-white shadow-lg">
-        <div class="container mx-auto px-4 py-6">
-            <h1 class="text-4xl font-bold text-center bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                <i class="fas fa-camera-retro mr-3"></i>AKPR's Gallery
-            </h1>
-            <p class="text-center text-gray-600 mt-2">Bộ sưu tập ảnh đẹp từ 2013 - 2025</p>
+    <header class="sticky-header border-b border-gold">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <div class="flex items-center space-x-3">
+                    <img src="https://page1.genspark.site/v1/base64_upload/ebe6f7de4d8a1b4044b6f3afea8635ba" alt="Tang Lễ Yên Bình Logo" class="h-12 w-12">
+                    <div>
+                        <h1 class="text-white font-bold text-lg md:text-xl">Tang Lễ Yên Bình</h1>
+                        <p class="text-gold text-xs md:text-sm">Trọn Vẹn Nghĩa Tình</p>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#gioi-thieu" class="text-white hover:text-gold transition">Giới Thiệu</a>
+                    <a href="#dich-vu" class="text-white hover:text-gold transition">Dịch Vụ</a>
+                    <a href="#gallery" class="text-white hover:text-gold transition">Hình Ảnh</a>
+                    <a href="#lien-he" class="text-white hover:text-gold transition">Liên Hệ</a>
+                </div>
+                
+                <div class="flex items-center space-x-3">
+                    <a href="tel:0785877755" class="btn-gold px-4 py-2 rounded-full text-sm font-semibold">
+                        <i class="fas fa-phone mr-2"></i>
+                        <span class="hidden sm:inline">0785877755</span>
+                    </a>
+                    <button id="mobile-menu-btn" class="md:hidden text-white text-xl">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="mobile-menu md:hidden fixed inset-y-0 left-0 w-64 bg-dark shadow-lg">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-8">
+                    <img src="https://page1.genspark.site/v1/base64_upload/ebe6f7de4d8a1b4044b6f3afea8635ba" alt="Logo" class="h-10 w-10">
+                    <button id="close-menu" class="text-white text-xl">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <nav class="space-y-4">
+                    <a href="#gioi-thieu" class="block text-white hover:text-gold transition py-2">Giới Thiệu</a>
+                    <a href="#dich-vu" class="block text-white hover:text-gold transition py-2">Dịch Vụ</a>
+                    <a href="#gallery" class="block text-white hover:text-gold transition py-2">Hình Ảnh</a>
+                    <a href="#lien-he" class="block text-white hover:text-gold transition py-2">Liên Hệ</a>
+                </nav>
+            </div>
         </div>
     </header>
 
-    <!-- Instructions -->
-    <div class="container mx-auto px-4 py-6">
-        <div class="instructions">
-            <h2 class="text-2xl font-bold mb-4"><i class="fas fa-info-circle mr-2"></i>Hướng dẫn sử dụng Gallery</h2>
-            <div class="text-sm space-y-2">
-                <p><strong>Để thêm ảnh từ Google Photos:</strong></p>
-                <ol class="list-decimal list-inside space-y-1 ml-4">
-                    <li>Mở Google Photos album của bạn</li>
-                    <li>Click vào từng ảnh → Share → Copy link</li>
-                    <li>Thay thế URL trong code JavaScript bên dưới</li>
-                    <li>Thêm thông tin title, category cho mỗi ảnh</li>
-                </ol>
-                <p><strong>Để nhúng vào Google Sites:</strong> Copy toàn bộ code HTML này và paste vào Google Sites bằng cách chọn Insert → Embed → Custom HTML</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Search and Filter -->
-    <div class="container mx-auto px-4 py-4">
-        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
-            <div class="flex-1 min-w-64">
-                <div class="relative">
-                    <input type="text" id="searchInput" placeholder="Tìm kiếm ảnh..." 
-                           class="w-full px-4 py-2 pl-10 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
-                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+    <!-- Hero Section -->
+    <section class="hero-bg text-white py-20 relative overflow-hidden">
+        <div class="container mx-auto px-4 text-center relative z-10">
+            <div class="fade-in">
+                <img src="https://page1.genspark.site/v1/base64_upload/ebe6f7de4d8a1b4044b6f3afea8635ba" alt="Logo" class="h-20 w-20 mx-auto mb-6 animate-pulse">
+                <h1 class="text-4xl md:text-6xl font-bold mb-4">
+                    <span class="text-gold">TRỌN VẸN</span> NGHĨA TÌNH
+                </h1>
+                <p class="text-xl md:text-2xl mb-8 text-gray-300">
+                    Đồng Hành Cùng Gia Đình Trong Giây Phút Khó Khăn
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <a href="tel:0785877755" class="btn-gold px-8 py-4 rounded-full text-lg font-semibold hover-scale">
+                        <i class="fas fa-phone mr-3"></i>Hotline 24/7: 0785877755
+                    </a>
+                    <a href="#lien-he" class="border-2 border-gold text-gold px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold hover:text-white transition duration-300">
+                        <i class="fas fa-envelope mr-3"></i>Tư Vấn Miễn Phí
+                    </a>
                 </div>
             </div>
-            <div class="flex flex-wrap gap-2">
-                <button class="filter-btn active px-4 py-2 bg-gray-200 rounded-lg text-sm font-medium" data-filter="all">
-                    <i class="fas fa-th mr-1"></i>Tất cả
-                </button>
-                <button class="filter-btn px-4 py-2 bg-gray-200 rounded-lg text-sm font-medium" data-filter="nature">
-                    <i class="fas fa-leaf mr-1"></i>Thiên nhiên
-                </button>
-                <button class="filter-btn px-4 py-2 bg-gray-200 rounded-lg text-sm font-medium" data-filter="people">
-                    <i class="fas fa-users mr-1"></i>Con người
-                </button>
-                <button class="filter-btn px-4 py-2 bg-gray-200 rounded-lg text-sm font-medium" data-filter="events">
-                    <i class="fas fa-calendar mr-1"></i>Sự kiện
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Photo Gallery -->
-    <div class="container mx-auto px-4 pb-8">
-        <div id="photoGallery" class="gallery-grid">
-            <!-- Gallery items will be dynamically loaded here -->
         </div>
         
-        <!-- Load More Button -->
-        <div class="text-center mt-8">
-            <button id="loadMoreBtn" class="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-medium hover:from-purple-700 hover:to-pink-700 transition-all duration-300">
-                <i class="fas fa-plus mr-2"></i>Xem thêm ảnh
-            </button>
-        </div>
-    </div>
+        <!-- Floating Elements -->
+        <div class="absolute top-10 left-10 w-2 h-2 bg-gold rounded-full animate-ping"></div>
+        <div class="absolute bottom-20 right-20 w-3 h-3 bg-gold rounded-full animate-pulse"></div>
+        <div class="absolute top-1/2 right-10 w-1 h-1 bg-gold rounded-full animate-ping"></div>
+    </section>
 
-    <!-- Lightbox -->
-    <div id="lightbox" class="lightbox">
-        <div class="lightbox-content">
-            <img id="lightboxImage" class="lightbox-image" src="" alt="">
-            <button class="lightbox-close" onclick="closeLightbox()">
-                <i class="fas fa-times"></i>
-            </button>
-            <button class="lightbox-nav lightbox-prev" onclick="previousImage()">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <button class="lightbox-nav lightbox-next" onclick="nextImage()">
-                <i class="fas fa-chevron-right"></i>
-            </button>
+    <!-- Giới Thiệu Section -->
+    <section id="gioi-thieu" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl md:text-5xl font-bold text-dark mb-6">
+                    <span class="text-gold">GIỚI THIỆU</span> TỔNG QUAN
+                </h2>
+                <div class="w-24 h-1 bg-gold mx-auto mb-8"></div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="fade-in">
+                    <img src="https://page1.genspark.site/v1/base64_upload/ec939ed68c137035688e12c76af26b57" 
+                         alt="Đội ngũ Tang Lễ Yên Bình" 
+                         class="rounded-2xl shadow-2xl w-full hover-scale">
+                </div>
+                
+                <div class="fade-in">
+                    <h3 class="text-2xl md:text-3xl font-bold text-dark mb-6">
+                        Hơn <span class="text-gold">10 Năm</span> Kinh Nghiệm
+                    </h3>
+                    <div class="space-y-6 text-gray-700 leading-relaxed">
+                        <p class="text-lg">
+                            <strong class="text-gold">Tang Lễ Yên Bình</strong> là một trong những đơn vị hàng đầu tại thành phố Phan Rang-Tháp Chàm chuyên cung cấp dịch vụ tang lễ và mai táng trọn gói với hơn nhiều năm kinh nghiệm trong ngành.
+                        </p>
+                        <p>
+                            Được thành lập với sứ mệnh <em class="text-gold font-semibold">"Đồng hành cùng gia đình trong giây phút khó khăn"</em>, chúng tôi cam kết mang đến những dịch vụ tang lễ trang trọng, chu đáo và đầy nghĩa tình.
+                        </p>
+                        <p>
+                            Chúng tôi hiểu rằng khi người thân yêu ra đi là khoảnh khắc đau buồn và khó khăn nhất đối với mọi gia đình. Trong những giây phút thiêng liêng ấy, Tang Lễ Yên Bình sinh ra để chia sẻ gánh nặng, lo toan mọi việc để gia đình có thể dành trọn thời gian bên người thân trong những khoảnh khắc cuối cùng.
+                        </p>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-6 mt-8">
+                        <div class="text-center p-4 bg-gray-50 rounded-xl">
+                            <i class="fas fa-heart text-3xl text-gold mb-2"></i>
+                            <h4 class="font-semibold text-dark">Tận Tâm</h4>
+                            <p class="text-sm text-gray-600">Phục vụ chu đáo</p>
+                        </div>
+                        <div class="text-center p-4 bg-gray-50 rounded-xl">
+                            <i class="fas fa-shield-alt text-3xl text-gold mb-2"></i>
+                            <h4 class="font-semibold text-dark">Uy Tín</h4>
+                            <p class="text-sm text-gray-600">Đáng tin cậy</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sứ Mệnh - Tầm Nhìn - Giá Trị -->
+            <div class="grid md:grid-cols-3 gap-8 mt-20">
+                <div class="text-center p-8 bg-gradient-to-b from-gold to-yellow-600 text-white rounded-2xl hover-scale">
+                    <i class="fas fa-bullseye text-4xl mb-4"></i>
+                    <h3 class="text-2xl font-bold mb-4">SỨ MỆNH</h3>
+                    <p class="leading-relaxed">
+                        Đồng hành cùng gia đình trong giây phút khó khăn, mang đến những dịch vụ tang lễ trang trọng, chu đáo và đầy nghĩa tình.
+                    </p>
+                </div>
+                
+                <div class="text-center p-8 bg-gradient-to-b from-dark to-gray-800 text-white rounded-2xl hover-scale">
+                    <i class="fas fa-eye text-4xl mb-4 text-gold"></i>
+                    <h3 class="text-2xl font-bold mb-4">TẦM NHÌN</h3>
+                    <p class="leading-relaxed">
+                        Trở thành đơn vị dịch vụ tang lễ hàng đầu khu vực, được khách hàng tin tưởng và lựa chọn hàng đầu.
+                    </p>
+                </div>
+                
+                <div class="text-center p-8 bg-gradient-to-b from-gold to-yellow-600 text-white rounded-2xl hover-scale">
+                    <i class="fas fa-gem text-4xl mb-4"></i>
+                    <h3 class="text-2xl font-bold mb-4">GIÁ TRỊ</h3>
+                    <p class="leading-relaxed">
+                        Tận tâm, chuyên nghiệp, minh bạch và luôn đặt lợi ích gia đình lên hàng đầu trong mọi hoạt động.
+                    </p>
+                </div>
+            </div>
         </div>
-        <div class="absolute bottom-4 left-4 text-white">
-            <div id="imageInfo" class="text-lg font-medium"></div>
-            <div id="imageCounter" class="text-sm opacity-75"></div>
-        </div>
-    </div>
+    </section>
 
-    <!-- Loading Indicator -->
-    <div id="loadingIndicator" class="fixed top-4 right-4 bg-white rounded-full p-3 shadow-lg" style="display: none;">
-        <i class="fas fa-spinner fa-spin text-purple-600"></i>
+    <!-- Tại Sao Chọn Chúng Tôi -->
+    <section class="py-20 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl md:text-5xl font-bold text-dark mb-6">
+                    TẠI SAO CHỌN <span class="text-gold">TANG LỄ YÊN BÌNH</span>
+                </h2>
+                <div class="w-24 h-1 bg-gold mx-auto"></div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-2xl shadow-lg hover-scale fade-in">
+                    <div class="w-16 h-16 bg-gold rounded-full flex items-center justify-center mb-6 mx-auto">
+                        <i class="fas fa-trophy text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-4 text-center">Nghĩa Trang Lớn Nhất Tỉnh</h3>
+                    <p class="text-gray-600 text-center leading-relaxed">
+                        Sở hữu nghĩa trang tư nhân lớn nhất tỉnh Ninh Thuận với hạ tầng hiện đại, cảnh quan xanh mát và an ninh 24/7.
+                    </p>
+                </div>
+                
+                <div class="bg-white p-8 rounded-2xl shadow-lg hover-scale fade-in">
+                    <div class="w-16 h-16 bg-gold rounded-full flex items-center justify-center mb-6 mx-auto">
+                        <i class="fas fa-clock text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-4 text-center">Dịch Vụ 24/7</h3>
+                    <p class="text-gray-600 text-center leading-relaxed">
+                        Đội ngũ luôn túc trực 24/7, sẵn sàng có mặt trong thời gian sớm nhất khi gia đình cần hỗ trợ.
+                    </p>
+                </div>
+                
+                <div class="bg-white p-8 rounded-2xl shadow-lg hover-scale fade-in">
+                    <div class="w-16 h-16 bg-gold rounded-full flex items-center justify-center mb-6 mx-auto">
+                        <i class="fas fa-users text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-4 text-center">Đội Ngũ Chuyên Nghiệp</h3>
+                    <p class="text-gray-600 text-center leading-relaxed">
+                        Nhiều năm kinh nghiệm, am hiểu nghi lễ truyền thống, thái độ tận tâm và chuyên nghiệp.
+                    </p>
+                </div>
+                
+                <div class="bg-white p-8 rounded-2xl shadow-lg hover-scale fade-in">
+                    <div class="w-16 h-16 bg-gold rounded-full flex items-center justify-center mb-6 mx-auto">
+                        <i class="fas fa-cogs text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-4 text-center">Trang Thiết Bị Hiện Đại</h3>
+                    <p class="text-gray-600 text-center leading-relaxed">
+                        Quy trình chuẩn hóa, trang thiết bị hiện đại, xe chuyên dụng cao cấp đảm bảo an toàn.
+                    </p>
+                </div>
+                
+                <div class="bg-white p-8 rounded-2xl shadow-lg hover-scale fade-in">
+                    <div class="w-16 h-16 bg-gold rounded-full flex items-center justify-center mb-6 mx-auto">
+                        <i class="fas fa-dollar-sign text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-4 text-center">Chi Phí Minh Bạch</h3>
+                    <p class="text-gray-600 text-center leading-relaxed">
+                        Báo giá chi tiết, minh bạch từ đầu. Cam kết không phát sinh chi phí ngoài hợp đồng.
+                    </p>
+                </div>
+                
+                <div class="bg-white p-8 rounded-2xl shadow-lg hover-scale fade-in">
+                    <div class="w-16 h-16 bg-gold rounded-full flex items-center justify-center mb-6 mx-auto">
+                        <i class="fas fa-handshake text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-4 text-center">Đồng Hành Tận Tâm</h3>
+                    <p class="text-gray-600 text-center leading-relaxed">
+                        Thấu hiểu nỗi đau mất mát, đồng hành từ đầu đến cuối với sự tận tụy và chu đáo nhất.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dịch Vụ Section -->
+    <section id="dich-vu" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl md:text-5xl font-bold text-dark mb-6">
+                    <span class="text-gold">DỊCH VỤ</span> CHUYÊN NGHIỆP
+                </h2>
+                <div class="w-24 h-1 bg-gold mx-auto mb-8"></div>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Cung cấp đa dạng gói dịch vụ tang lễ từ cơ bản đến cao cấp, đáp ứng nhu cầu và điều kiện kinh tế của mọi gia đình
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Dịch Vụ An Táng -->
+                <div class="bg-gradient-to-b from-gold to-yellow-600 text-white p-8 rounded-2xl hover-scale">
+                    <i class="fas fa-home text-4xl mb-6"></i>
+                    <h3 class="text-2xl font-bold mb-4">Dịch Vụ An Táng</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><i class="fas fa-check mr-2"></i>Gói Phúc Bảo - 39 triệu</li>
+                        <li><i class="fas fa-check mr-2"></i>Gói Bảo An - 42 triệu</li>
+                        <li><i class="fas fa-check mr-2"></i>Gói Ngọc Ân - 55 triệu</li>
+                        <li><i class="fas fa-check mr-2"></i>Gói Ngọc Bảo - 75 triệu</li>
+                        <li><i class="fas fa-check mr-2"></i>Gói Thiên Ân - 63 triệu</li>
+                        <li><i class="fas fa-check mr-2"></i>Gói Ngọc Phúc - 110 triệu</li>
+                        <li><i class="fas fa-check mr-2"></i>Gói Phúc An - 115 triệu</li>
+                    </ul>
+                </div>
+                
+                <!-- Dịch Vụ Hỏa Táng -->
+                <div class="bg-gradient-to-b from-dark to-gray-800 text-white p-8 rounded-2xl hover-scale">
+                    <i class="fas fa-fire text-4xl mb-6 text-gold"></i>
+                    <h3 class="text-2xl font-bold mb-4">Dịch Vụ Hỏa Táng</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><i class="fas fa-check mr-2 text-gold"></i>Hỏa táng cơ bản</li>
+                        <li><i class="fas fa-check mr-2 text-gold"></i>Hỏa táng tiêu chuẩn</li>
+                        <li><i class="fas fa-check mr-2 text-gold"></i>Hỏa táng cao cấp</li>
+                        <li><i class="fas fa-check mr-2 text-gold"></i>Hỏa táng đặc biệt</li>
+                        <li><i class="fas fa-check mr-2 text-gold"></i>Hũ đựng tro cốt cao cấp</li>
+                        <li><i class="fas fa-check mr-2 text-gold"></i>Nghi lễ an táng tro cốt</li>
+                    </ul>
+                </div>
+                
+                <!-- Dịch Vụ Cải Táng -->
+                <div class="bg-gradient-to-b from-gold to-yellow-600 text-white p-8 rounded-2xl hover-scale">
+                    <i class="fas fa-sync-alt text-4xl mb-6"></i>
+                    <h3 class="text-2xl font-bold mb-4">Dịch Vụ Cải Táng</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><i class="fas fa-check mr-2"></i>Cải táng cơ bản</li>
+                        <li><i class="fas fa-check mr-2"></i>Cải táng tiêu chuẩn</li>
+                        <li><i class="fas fa-check mr-2"></i>Cải táng cao cấp</li>
+                        <li><i class="fas fa-check mr-2"></i>Tư vấn phong thủy</li>
+                        <li><i class="fas fa-check mr-2"></i>Hỗ trợ thủ tục pháp lý</li>
+                        <li><i class="fas fa-check mr-2"></i>Khai quật an toàn</li>
+                    </ul>
+                </div>
+                
+                <!-- Thủ Tục Pháp Lý -->
+                <div class="bg-white border-2 border-gold p-8 rounded-2xl hover-scale">
+                    <i class="fas fa-file-alt text-4xl mb-6 text-gold"></i>
+                    <h3 class="text-2xl font-bold mb-4 text-dark">Thủ Tục Pháp Lý</h3>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li><i class="fas fa-check mr-2 text-gold"></i>Giấy chứng tử</li>
+                        <li><i class="fas fa-check mr-2 text-gold"></i>Thủ tục hỏa táng</li>
+                        <li><i class="fas fa-check mr-2 text-gold"></i>Giấy phép chôn cất</li>
+                        <li><i class="fas fa-check mr-2 text-gold"></i>Di chuyển thi thể</li>
+                        <li><i class="fas fa-check mr-2 text-gold"></i>Tư vấn pháp lý miễn phí</li>
+                    </ul>
+                </div>
+                
+                <!-- Trang Trí & Nghi Lễ -->
+                <div class="bg-white border-2 border-gold p-8 rounded-2xl hover-scale">
+                    <i class="fas fa-magic text-4xl mb-6 text-gold"></i>
+                    <h3 class="text-2xl font-bold mb-4 text-dark">Trang Trí & Nghi Lễ</h3>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li><i class="fas fa-check mr-2 text-gold"></i>Thiết kế linh đường</li>
+                        <li><i class="fas fa-check mr-2 text-gold"></i>Hoa tươi cao cấp</li>
+                        <li><i class="fas fa-check mr-2 text-gold"></i>Âm thanh chuyên nghiệp</li>
+                        <li><i class="fas fa-check mr-2 text-gold"></i>Chụp ảnh lưu niệm</li>
+                        <li><i class="fas fa-check mr-2 text-gold"></i>Nghi lễ tôn giáo</li>
+                    </ul>
+                </div>
+                
+                <!-- Vận Chuyển -->
+                <div class="bg-white border-2 border-gold p-8 rounded-2xl hover-scale">
+                    <i class="fas fa-truck text-4xl mb-6 text-gold"></i>
+                    <h3 class="text-2xl font-bold mb-4 text-dark">Vận Chuyển</h3>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li><i class="fas fa-check mr-2 text-gold"></i>Xe tang cao cấp</li>
+                        <li><i class="fas fa-check mr-2 text-gold"></i>Xe rồng truyền thống</li>
+                        <li><i class="fas fa-check mr-2 text-gold"></i>Xe chở gia đình</li>
+                        <li><i class="fas fa-check mr-2 text-gold"></i>Lái xe kinh nghiệm</li>
+                        <li><i class="fas fa-check mr-2 text-gold"></i>Trang trí xe theo phong tục</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="tel:0785877755" class="btn-gold px-8 py-4 rounded-full text-lg font-semibold hover-scale inline-block">
+                    <i class="fas fa-phone mr-3"></i>Tư Vấn Chi Tiết Ngay
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="py-20 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl md:text-5xl font-bold text-dark mb-6">
+                    <span class="text-gold">HÌNH ẢNH</span> DỊCH VỤ
+                </h2>
+                <div class="w-24 h-1 bg-gold mx-auto mb-8"></div>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Khám phá cơ sở vật chất hiện đại và các dịch vụ chuyên nghiệp của Tang Lễ Yên Bình
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Gallery Item 1 -->
+                <div class="gallery-item h-64 bg-gradient-to-br from-gold to-yellow-600 relative">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <i class="fas fa-home text-6xl text-white opacity-50"></i>
+                    </div>
+                    <div class="gallery-content">
+                        <h3 class="text-xl font-bold mb-2">Nghĩa Trang Hiện Đại</h3>
+                        <p class="text-sm opacity-90">Nghĩa trang tư nhân lớn nhất tỉnh với hạ tầng hoàn thiện, cảnh quan xanh mát</p>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 2 -->
+                <div class="gallery-item h-64 bg-gradient-to-br from-dark to-gray-700 relative">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <i class="fas fa-church text-6xl text-gold opacity-50"></i>
+                    </div>
+                    <div class="gallery-content">
+                        <h3 class="text-xl font-bold mb-2">Trang Trí Linh Đường</h3>
+                        <p class="text-sm opacity-90">Thiết kế linh đường trang trọng, nghiêm trang theo truyền thống</p>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 3 -->
+                <div class="gallery-item h-64 bg-gradient-to-br from-gold to-yellow-600 relative">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <i class="fas fa-truck text-6xl text-white opacity-50"></i>
+                    </div>
+                    <div class="gallery-content">
+                        <h3 class="text-xl font-bold mb-2">Xe Chuyên Dụng</h3>
+                        <p class="text-sm opacity-90">Hệ thống xe tang, xe rồng cao cấp, trang trọng và hiện đại</p>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 4 -->
+                <div class="gallery-item h-64 bg-gradient-to-br from-dark to-gray-700 relative">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <i class="fas fa-seedling text-6xl text-gold opacity-50"></i>
+                    </div>
+                    <div class="gallery-content">
+                        <h3 class="text-xl font-bold mb-2">Hoa Tươi Cao Cấp</h3>
+                        <p class="text-sm opacity-90">Vòng hoa, lẵng hoa, bó hoa tươi được thiết kế đẹp mắt</p>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 5 -->
+                <div class="gallery-item h-64 bg-gradient-to-br from-gold to-yellow-600 relative">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <i class="fas fa-music text-6xl text-white opacity-50"></i>
+                    </div>
+                    <div class="gallery-content">
+                        <h3 class="text-xl font-bold mb-2">Ban Nhạc Lễ</h3>
+                        <p class="text-sm opacity-90">Đội kèn tây, trống chiêng chuyên nghiệp phục vụ nghi lễ</p>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 6 -->
+                <div class="gallery-item h-64 bg-gradient-to-br from-dark to-gray-700 relative">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <i class="fas fa-building text-6xl text-gold opacity-50"></i>
+                    </div>
+                    <div class="gallery-content">
+                        <h3 class="text-xl font-bold mb-2">Cơ Sở Vật Chất</h3>
+                        <p class="text-sm opacity-90">3 chi nhánh với cơ sở vật chất hiện đại, đầy đủ tiện nghi</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cam Kết Section -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl md:text-5xl font-bold text-dark mb-6">
+                    <span class="text-gold">CAM KẾT</span> CHẤT LƯỢNG
+                </h2>
+                <div class="w-24 h-1 bg-gold mx-auto"></div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="fade-in">
+                    <div class="space-y-8">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-gold rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                <i class="fas fa-heart text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-dark mb-2">Tận Tâm và Thấu Hiểu</h3>
+                                <p class="text-gray-600">Đặt mình vào vị trí của gia đình, thấu hiểu nỗi đau mất mát và đồng hành bằng sự tận tụy nhất.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-gold rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                <i class="fas fa-star text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-dark mb-2">Chất Lượng Dịch Vụ</h3>
+                                <p class="text-gray-600">Mọi nghi lễ đều được thực hiện trang nghiêm, chỉn chu với sự tôn kính tuyệt đối.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-gold rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                <i class="fas fa-eye text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-dark mb-2">Minh Bạch Chi Phí</h3>
+                                <p class="text-gray-600">Báo giá chi tiết, cam kết không phát sinh bất kỳ chi phí nào ngoài hợp đồng.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="fade-in">
+                    <div class="space-y-8">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-gold rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                <i class="fas fa-clock text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-dark mb-2">Sẵn Sàng Hỗ Trợ</h3>
+                                <p class="text-gray-600">Đội ngũ túc trực 24/7, cam kết có mặt trong thời gian sớm nhất khi cần thiết.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-gold rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                <i class="fas fa-building text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-dark mb-2">Cơ Sở Vật Chất</h3>
+                                <p class="text-gray-600">Trang thiết bị hiện đại, nghĩa trang lớn nhất tỉnh với hạ tầng hoàn thiện.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-gold rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                <i class="fas fa-shield-alt text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-dark mb-2">Trách Nhiệm</h3>
+                                <p class="text-gray-600">Chịu trách nhiệm hoàn toàn, khắc phục ngay lập tức mọi sai sót trong quá trình thực hiện.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Liên Hệ Section -->
+    <section id="lien-he" class="py-20 bg-dark text-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    <span class="text-gold">LIÊN HỆ</span> VỚI CHÚNG TÔI
+                </h2>
+                <div class="w-24 h-1 bg-gold mx-auto mb-8"></div>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    Hỗ trợ 24/7 - Sẵn sàng đồng hành cùng gia đình trong mọi hoàn cảnh
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+                <!-- Hotline -->
+                <div class="text-center fade-in">
+                    <div class="w-16 h-16 bg-gold rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-phone text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Hotline 24/7</h3>
+                    <p class="text-gold text-lg font-semibold">0785877755</p>
+                    <p class="text-gray-400 text-sm">Luôn sẵn sàng tiếp nhận</p>
+                </div>
+                
+                <!-- Email -->
+                <div class="text-center fade-in">
+                    <div class="w-16 h-16 bg-gold rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-envelope text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Email</h3>
+                    <p class="text-gold">tangleyenbinh@gmail.com</p>
+                    <p class="text-gray-400 text-sm">Tư vấn trực tuyến</p>
+                </div>
+                
+                <!-- Website -->
+                <div class="text-center fade-in">
+                    <div class="w-16 h-16 bg-gold rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-globe text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Website</h3>
+                    <p class="text-gold">tangleyenbinh.com</p>
+                    <p class="text-gray-400 text-sm">Thông tin chi tiết</p>
+                </div>
+                
+                <!-- Thời gian -->
+                <div class="text-center fade-in">
+                    <div class="w-16 h-16 bg-gold rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-clock text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Thời gian</h3>
+                    <p class="text-gold">24/7</p>
+                    <p class="text-gray-400 text-sm">Không ngừng nghỉ</p>
+                </div>
+            </div>
+            
+            <!-- Chi nhánh -->
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-gray-800 p-6 rounded-2xl fade-in">
+                    <h3 class="text-xl font-bold mb-4 text-gold">
+                        <i class="fas fa-building mr-2"></i>Văn Phòng Chính
+                    </h3>
+                    <p class="text-gray-300 mb-3">
+                        31B Trần Phú, Phường Phủ Hà, Thành phố Phan Rang-Tháp Chàm, Tỉnh Ninh Thuận
+                    </p>
+                    <a href="https://maps.app.goo.gl/6LYANJg6FXxBMVhM6" target="_blank" 
+                       class="text-gold hover:text-yellow-400 transition">
+                        <i class="fas fa-map-marker-alt mr-2"></i>Xem bản đồ
+                    </a>
+                </div>
+                
+                <div class="bg-gray-800 p-6 rounded-2xl fade-in">
+                    <h3 class="text-xl font-bold mb-4 text-gold">
+                        <i class="fas fa-store mr-2"></i>Chi Nhánh 1
+                    </h3>
+                    <p class="text-gray-300 mb-3">
+                        776 đường 21/8, Phường Đô Vinh, Thành phố Phan Rang-Tháp Chàm, Tỉnh Ninh Thuận
+                    </p>
+                    <a href="tel:0785877755" class="text-gold hover:text-yellow-400 transition">
+                        <i class="fas fa-phone mr-2"></i>Liên hệ
+                    </a>
+                </div>
+                
+                <div class="bg-gray-800 p-6 rounded-2xl fade-in">
+                    <h3 class="text-xl font-bold mb-4 text-gold">
+                        <i class="fas fa-store mr-2"></i>Chi Nhánh 2
+                    </h3>
+                    <p class="text-gray-300 mb-3">
+                        213 đường Yên Ninh, Phường Mỹ Hài, Thành phố Phan Rang-Tháp Chàm, Tỉnh Ninh Thuận
+                    </p>
+                    <a href="tel:0785877755" class="text-gold hover:text-yellow-400 transition">
+                        <i class="fas fa-phone mr-2"></i>Liên hệ
+                    </a>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="tel:0785877755" class="btn-gold px-8 py-4 rounded-full text-lg font-semibold hover-scale inline-block mr-4">
+                    <i class="fas fa-phone mr-3"></i>Gọi Ngay: 0785877755
+                </a>
+                <a href="mailto:tangleyenbinh@gmail.com" class="border-2 border-gold text-gold px-8 py-4 rounded-full text-lg font-semibold hover:bg-gold hover:text-white transition duration-300 inline-block">
+                    <i class="fas fa-envelope mr-3"></i>Gửi Email
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-3 mb-4">
+                        <img src="https://page1.genspark.site/v1/base64_upload/ebe6f7de4d8a1b4044b6f3afea8635ba" alt="Logo" class="h-10 w-10">
+                        <div>
+                            <h3 class="text-lg font-bold">Tang Lễ Yên Bình</h3>
+                            <p class="text-gold text-sm">Trọn Vẹn Nghĩa Tình</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Đồng hành cùng gia đình trong giây phút khó khăn với sự tận tâm và chuyên nghiệp nhất.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="text-gold font-semibold mb-4">Dịch Vụ</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#dich-vu" class="hover:text-gold transition">Tang Lễ An Táng</a></li>
+                        <li><a href="#dich-vu" class="hover:text-gold transition">Tang Lễ Hỏa Táng</a></li>
+                        <li><a href="#dich-vu" class="hover:text-gold transition">Dịch Vụ Cải Táng</a></li>
+                        <li><a href="#dich-vu" class="hover:text-gold transition">Thủ Tục Pháp Lý</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-gold font-semibold mb-4">Liên Hệ</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><i class="fas fa-phone mr-2 text-gold"></i>0785877755</li>
+                        <li><i class="fas fa-envelope mr-2 text-gold"></i>tangleyenbinh@gmail.com</li>
+                        <li><i class="fas fa-globe mr-2 text-gold"></i>tangleyenbinh.com</li>
+                        <li><i class="fas fa-clock mr-2 text-gold"></i>24/7 không nghỉ</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-gold font-semibold mb-4">Thông Tin</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#gioi-thieu" class="hover:text-gold transition">Giới Thiệu</a></li>
+                        <li><a href="#gallery" class="hover:text-gold transition">Hình Ảnh</a></li>
+                        <li><a href="#lien-he" class="hover:text-gold transition">Liên Hệ</a></li>
+                        <li><a href="https://maps.app.goo.gl/6LYANJg6FXxBMVhM6" target="_blank" class="hover:text-gold transition">Bản Đồ</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center">
+                <p class="text-gray-400 text-sm">
+                    © 2024 Dịch Vụ Tang Lễ Yên Bình. Tất cả quyền được bảo lưu.
+                </p>
+                <p class="text-gold text-xs mt-2">
+                    "Trọn Vẹn Nghĩa Tình - Đồng Hành Cùng Gia Đình Trong Giây Phút Khó Khăn"
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Contact -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <a href="tel:0785877755" class="btn-gold w-16 h-16 rounded-full flex items-center justify-center shadow-2xl hover-scale animate-pulse">
+            <i class="fas fa-phone text-xl"></i>
+        </a>
     </div>
 
     <script>
-        // Photo data structure - REPLACE WITH YOUR ACTUAL GOOGLE PHOTOS URLs
-        const photoData = [
-            {
-                id: 1,
-                src: "https://picsum.photos/400/400?random=1",
-                title: "Ảnh mẫu 1",
-                category: "nature",
-                description: "Thay thế bằng URL ảnh từ Google Photos"
-            },
-            {
-                id: 2,
-                src: "https://picsum.photos/400/400?random=2",
-                title: "Ảnh mẫu 2",
-                category: "people",
-                description: "Thay thế bằng URL ảnh từ Google Photos"
-            },
-            {
-                id: 3,
-                src: "https://picsum.photos/400/400?random=3",
-                title: "Ảnh mẫu 3",
-                category: "events",
-                description: "Thay thế bằng URL ảnh từ Google Photos"
-            },
-            {
-                id: 4,
-                src: "https://picsum.photos/400/400?random=4",
-                title: "Ảnh mẫu 4",
-                category: "nature",
-                description: "Thay thế bằng URL ảnh từ Google Photos"
-            },
-            {
-                id: 5,
-                src: "https://picsum.photos/400/400?random=5",
-                title: "Ảnh mẫu 5",
-                category: "people",
-                description: "Thay thế bằng URL ảnh từ Google Photos"
-            },
-            {
-                id: 6,
-                src: "https://picsum.photos/400/400?random=6",
-                title: "Ảnh mẫu 6",
-                category: "events",
-                description: "Thay thế bằng URL ảnh từ Google Photos"
-            },
-            {
-                id: 7,
-                src: "https://picsum.photos/400/400?random=7",
-                title: "Ảnh mẫu 7",
-                category: "nature",
-                description: "Thay thế bằng URL ảnh từ Google Photos"
-            },
-            {
-                id: 8,
-                src: "https://picsum.photos/400/400?random=8",
-                title: "Ảnh mẫu 8",
-                category: "people",
-                description: "Thay thế bằng URL ảnh từ Google Photos"
-            },
-            {
-                id: 9,
-                src: "https://picsum.photos/400/400?random=9",
-                title: "Ảnh mẫu 9",
-                category: "events",
-                description: "Thay thế bằng URL ảnh từ Google Photos"
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const closeMenu = document.getElementById('close-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.add('active');
+        });
+
+        closeMenu.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                mobileMenu.classList.remove('active');
             }
-        ];
+        });
 
-        let currentImageIndex = 0;
-        let filteredPhotos = [...photoData];
-        let displayedPhotos = 6; // Initially show 6 photos
-
-        // Initialize gallery
-        function initGallery() {
-            renderGallery();
-            setupEventListeners();
-            setupLazyLoading();
-        }
-
-        // Render gallery
-        function renderGallery() {
-            const gallery = document.getElementById('photoGallery');
-            const photosToShow = filteredPhotos.slice(0, displayedPhotos);
-            
-            gallery.innerHTML = photosToShow.map((photo, index) => `
-                <div class="gallery-item rounded-lg overflow-hidden shadow-lg bg-white" data-category="${photo.category}" onclick="openLightbox(${index})">
-                    <img class="lazy-image" data-src="${photo.src}" alt="${photo.title}">
-                    <div class="gallery-overlay">
-                        <i class="fas fa-search-plus text-white text-2xl"></i>
-                    </div>
-                </div>
-            `).join('');
-
-            // Update load more button visibility
-            const loadMoreBtn = document.getElementById('loadMoreBtn');
-            loadMoreBtn.style.display = displayedPhotos >= filteredPhotos.length ? 'none' : 'block';
-
-            // Re-setup lazy loading for new images
-            setupLazyLoading();
-        }
-
-        // Setup event listeners
-        function setupEventListeners() {
-            // Search functionality
-            const searchInput = document.getElementById('searchInput');
-            searchInput.addEventListener('input', handleSearch);
-
-            // Filter buttons
-            const filterButtons = document.querySelectorAll('.filter-btn');
-            filterButtons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    filterButtons.forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    handleFilter(btn.dataset.filter);
-                });
-            });
-
-            // Load more button
-            document.getElementById('loadMoreBtn').addEventListener('click', loadMorePhotos);
-
-            // Keyboard navigation for lightbox
-            document.addEventListener('keydown', (e) => {
-                if (document.getElementById('lightbox').classList.contains('active')) {
-                    if (e.key === 'ArrowLeft') previousImage();
-                    if (e.key === 'ArrowRight') nextImage();
-                    if (e.key === 'Escape') closeLightbox();
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    // Close mobile menu if open
+                    mobileMenu.classList.remove('active');
                 }
             });
+        });
 
-            // Close lightbox on background click
-            document.getElementById('lightbox').addEventListener('click', (e) => {
-                if (e.target.id === 'lightbox') closeLightbox();
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
             });
-        }
+        }, observerOptions);
 
-        // Setup lazy loading
-        function setupLazyLoading() {
-            const lazyImages = document.querySelectorAll('.lazy-image');
-            
-            const imageObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const img = entry.target;
-                        img.src = img.dataset.src;
-                        img.addEventListener('load', () => {
-                            img.classList.add('loaded');
-                        });
-                        observer.unobserve(img);
-                    }
-                });
-            });
+        // Observe all fade-in elements
+        document.querySelectorAll('.fade-in').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+            observer.observe(el);
+        });
 
-            lazyImages.forEach(img => imageObserver.observe(img));
-        }
-
-        // Handle search
-        function handleSearch(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            filteredPhotos = photoData.filter(photo => 
-                photo.title.toLowerCase().includes(searchTerm) ||
-                photo.description.toLowerCase().includes(searchTerm)
-            );
-            displayedPhotos = 6;
-            renderGallery();
-        }
-
-        // Handle filter
-        function handleFilter(category) {
-            if (category === 'all') {
-                filteredPhotos = [...photoData];
+        // Header background on scroll
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.sticky-header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(26, 26, 26, 0.98)';
             } else {
-                filteredPhotos = photoData.filter(photo => photo.category === category);
+                header.style.background = 'rgba(26, 26, 26, 0.95)';
             }
-            displayedPhotos = 6;
-            renderGallery();
-        }
-
-        // Load more photos
-        function loadMorePhotos() {
-            const loadingIndicator = document.getElementById('loadingIndicator');
-            loadingIndicator.style.display = 'block';
-            
-            setTimeout(() => {
-                displayedPhotos += 6;
-                renderGallery();
-                loadingIndicator.style.display = 'none';
-            }, 500);
-        }
-
-        // Lightbox functions
-        function openLightbox(index) {
-            currentImageIndex = index;
-            const photo = filteredPhotos[index];
-            const lightbox = document.getElementById('lightbox');
-            const lightboxImage = document.getElementById('lightboxImage');
-            const imageInfo = document.getElementById('imageInfo');
-            const imageCounter = document.getElementById('imageCounter');
-
-            lightboxImage.src = photo.src;
-            imageInfo.textContent = photo.title;
-            imageCounter.textContent = `${index + 1} / ${filteredPhotos.length}`;
-            
-            lightbox.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeLightbox() {
-            const lightbox = document.getElementById('lightbox');
-            lightbox.classList.remove('active');
-            document.body.style.overflow = 'auto';
-        }
-
-        function previousImage() {
-            currentImageIndex = currentImageIndex > 0 ? currentImageIndex - 1 : filteredPhotos.length - 1;
-            openLightbox(currentImageIndex);
-        }
-
-        function nextImage() {
-            currentImageIndex = currentImageIndex < filteredPhotos.length - 1 ? currentImageIndex + 1 : 0;
-            openLightbox(currentImageIndex);
-        }
-
-        // Initialize when DOM is loaded
-        document.addEventListener('DOMContentLoaded', initGallery);
-
-        // INSTRUCTIONS FOR ADDING REAL GOOGLE PHOTOS:
-        // 1. Replace the photoData array above with your actual photo URLs from Google Photos
-        // 2. To get individual photo URLs from Google Photos:
-        //    - Open your shared album
-        //    - Click on each photo
-        //    - Click Share button
-        //    - Copy the individual photo link
-        //    - Use that link in the src field
-        // 3. Update the title, category, and description for each photo
-        // 4. You can add more categories by updating the filter buttons and CSS
-
-        console.log(`
-🎨 AKPR's Gallery Instructions:
-=====================================
-1. Thay thế URLs trong mảng photoData bằng links từ Google Photos
-2. Cập nhật title, category, description cho mỗi ảnh  
-3. Để nhúng vào Google Sites: Insert → Embed → Custom HTML
-4. Gallery tự động responsive và có lazy loading
-5. Support search, filter, và lightbox view
-        `);
+        });
     </script>
 </body>
 </html>
