@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AKPR's Gallery - Photo Grid</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>
+        .gallery-item {
+            aspect-ratio: 1;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .gallery-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.3s ease;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+        
+        .gallery-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(0,0,0,0.5), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+        
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .lightbox.active {
+            display: flex;
+        }
+        
+        .lightbox-content {
+            max-width: 90vw;
+            max-height: 90vh;
+            position: relative;
+        }
+        
+        .lightbox-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            font-size: 24px;
+            padding: 15px 20px;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .lightbox-nav:hover {
+            background: rgba(255,255,255,0.4);
+        }
+        
+        .lightbox-prev {
+            left: -60px;
+        }
+        
+        .lightbox-next {
+            right: -60px;
+        }
+        
+        .lightbox-close {
+            position: absolute;
+            top: -50px;
+            right: -10px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+        }
+        
+        .filter-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .lazy-image {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .lazy-image.loaded {
+            opacity: 1;
+        }
+        
+        .instructions {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .gallery-grid {
+            display: grid;
+            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+        
+        @media (max-width: 768px) {
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            .lightbox-nav {
+                font-size: 18px;
+                padding: 10px 15px;
+            }
+            
+            .lightbox-prev {
+                left: -45px;
+            }
+            
+            .lightbox-next {
+                right: -45px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <h1 class="text-4xl font-bold text-center bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                <i class="fas fa-camera-retro mr-3"></i>AKPR's Gallery
+            </h1>
+            <p class="text-center text-gray-600 mt-2">Bộ sưu tập ảnh đẹp từ 2013 - 2025</p>
+        </div>
+    </header>
+
+    <!-- Instructions -->
+    <div class="container mx-auto px-4 py-6">
+        <div class="instructions">
+            <h2 class="text-2xl font-bold mb-4"><i class="fas fa-info-circle mr-2"></i>Hướng dẫn sử dụng Gallery</h2>
+            <div class="text-sm space-y-2">
+                <p><strong>Để thêm ảnh từ Google Photos:</strong></p>
+                <ol class="list-decimal list-inside space-y-1 ml-4">
+                    <li>Mở Google Photos album của bạn</li>
+                    <li>Click vào từng ảnh → Share → Copy link</li>
+                    <li>Thay thế URL trong code JavaScript bên dưới</li>
+                    <li>Thêm thông tin title, category cho mỗi ảnh</li>
+                </ol>
+                <p><strong>Để nhúng vào Google Sites:</strong> Copy toàn bộ code HTML này và paste vào Google Sites bằng cách chọn Insert → Embed → Custom HTML</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filter -->
+    <div class="container mx-auto px-4 py-4">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+            <div class="flex-1 min-w-64">
+                <div class="relative">
+                    <input type="text" id="searchInput" placeholder="Tìm kiếm ảnh..." 
+                           class="w-full px-4 py-2 pl-10 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                </div>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <button class="filter-btn active px-4 py-2 bg-gray-200 rounded-lg text-sm font-medium" data-filter="all">
+                    <i class="fas fa-th mr-1"></i>Tất cả
+                </button>
+                <button class="filter-btn px-4 py-2 bg-gray-200 rounded-lg text-sm font-medium" data-filter="nature">
+                    <i class="fas fa-leaf mr-1"></i>Thiên nhiên
+                </button>
+                <button class="filter-btn px-4 py-2 bg-gray-200 rounded-lg text-sm font-medium" data-filter="people">
+                    <i class="fas fa-users mr-1"></i>Con người
+                </button>
+                <button class="filter-btn px-4 py-2 bg-gray-200 rounded-lg text-sm font-medium" data-filter="events">
+                    <i class="fas fa-calendar mr-1"></i>Sự kiện
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Photo Gallery -->
+    <div class="container mx-auto px-4 pb-8">
+        <div id="photoGallery" class="gallery-grid">
+            <!-- Gallery items will be dynamically loaded here -->
+        </div>
+        
+        <!-- Load More Button -->
+        <div class="text-center mt-8">
+            <button id="loadMoreBtn" class="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-medium hover:from-purple-700 hover:to-pink-700 transition-all duration-300">
+                <i class="fas fa-plus mr-2"></i>Xem thêm ảnh
+            </button>
+        </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox">
+        <div class="lightbox-content">
+            <img id="lightboxImage" class="lightbox-image" src="" alt="">
+            <button class="lightbox-close" onclick="closeLightbox()">
+                <i class="fas fa-times"></i>
+            </button>
+            <button class="lightbox-nav lightbox-prev" onclick="previousImage()">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="lightbox-nav lightbox-next" onclick="nextImage()">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+        <div class="absolute bottom-4 left-4 text-white">
+            <div id="imageInfo" class="text-lg font-medium"></div>
+            <div id="imageCounter" class="text-sm opacity-75"></div>
+        </div>
+    </div>
+
+    <!-- Loading Indicator -->
+    <div id="loadingIndicator" class="fixed top-4 right-4 bg-white rounded-full p-3 shadow-lg" style="display: none;">
+        <i class="fas fa-spinner fa-spin text-purple-600"></i>
+    </div>
+
+    <script>
+        // Photo data structure - REPLACE WITH YOUR ACTUAL GOOGLE PHOTOS URLs
+        const photoData = [
+            {
+                id: 1,
+                src: "https://picsum.photos/400/400?random=1",
+                title: "Ảnh mẫu 1",
+                category: "nature",
+                description: "Thay thế bằng URL ảnh từ Google Photos"
+            },
+            {
+                id: 2,
+                src: "https://picsum.photos/400/400?random=2",
+                title: "Ảnh mẫu 2",
+                category: "people",
+                description: "Thay thế bằng URL ảnh từ Google Photos"
+            },
+            {
+                id: 3,
+                src: "https://picsum.photos/400/400?random=3",
+                title: "Ảnh mẫu 3",
+                category: "events",
+                description: "Thay thế bằng URL ảnh từ Google Photos"
+            },
+            {
+                id: 4,
+                src: "https://picsum.photos/400/400?random=4",
+                title: "Ảnh mẫu 4",
+                category: "nature",
+                description: "Thay thế bằng URL ảnh từ Google Photos"
+            },
+            {
+                id: 5,
+                src: "https://picsum.photos/400/400?random=5",
+                title: "Ảnh mẫu 5",
+                category: "people",
+                description: "Thay thế bằng URL ảnh từ Google Photos"
+            },
+            {
+                id: 6,
+                src: "https://picsum.photos/400/400?random=6",
+                title: "Ảnh mẫu 6",
+                category: "events",
+                description: "Thay thế bằng URL ảnh từ Google Photos"
+            },
+            {
+                id: 7,
+                src: "https://picsum.photos/400/400?random=7",
+                title: "Ảnh mẫu 7",
+                category: "nature",
+                description: "Thay thế bằng URL ảnh từ Google Photos"
+            },
+            {
+                id: 8,
+                src: "https://picsum.photos/400/400?random=8",
+                title: "Ảnh mẫu 8",
+                category: "people",
+                description: "Thay thế bằng URL ảnh từ Google Photos"
+            },
+            {
+                id: 9,
+                src: "https://picsum.photos/400/400?random=9",
+                title: "Ảnh mẫu 9",
+                category: "events",
+                description: "Thay thế bằng URL ảnh từ Google Photos"
+            }
+        ];
+
+        let currentImageIndex = 0;
+        let filteredPhotos = [...photoData];
+        let displayedPhotos = 6; // Initially show 6 photos
+
+        // Initialize gallery
+        function initGallery() {
+            renderGallery();
+            setupEventListeners();
+            setupLazyLoading();
+        }
+
+        // Render gallery
+        function renderGallery() {
+            const gallery = document.getElementById('photoGallery');
+            const photosToShow = filteredPhotos.slice(0, displayedPhotos);
+            
+            gallery.innerHTML = photosToShow.map((photo, index) => `
+                <div class="gallery-item rounded-lg overflow-hidden shadow-lg bg-white" data-category="${photo.category}" onclick="openLightbox(${index})">
+                    <img class="lazy-image" data-src="${photo.src}" alt="${photo.title}">
+                    <div class="gallery-overlay">
+                        <i class="fas fa-search-plus text-white text-2xl"></i>
+                    </div>
+                </div>
+            `).join('');
+
+            // Update load more button visibility
+            const loadMoreBtn = document.getElementById('loadMoreBtn');
+            loadMoreBtn.style.display = displayedPhotos >= filteredPhotos.length ? 'none' : 'block';
+
+            // Re-setup lazy loading for new images
+            setupLazyLoading();
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', handleSearch);
+
+            // Filter buttons
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    handleFilter(btn.dataset.filter);
+                });
+            });
+
+            // Load more button
+            document.getElementById('loadMoreBtn').addEventListener('click', loadMorePhotos);
+
+            // Keyboard navigation for lightbox
+            document.addEventListener('keydown', (e) => {
+                if (document.getElementById('lightbox').classList.contains('active')) {
+                    if (e.key === 'ArrowLeft') previousImage();
+                    if (e.key === 'ArrowRight') nextImage();
+                    if (e.key === 'Escape') closeLightbox();
+                }
+            });
+
+            // Close lightbox on background click
+            document.getElementById('lightbox').addEventListener('click', (e) => {
+                if (e.target.id === 'lightbox') closeLightbox();
+            });
+        }
+
+        // Setup lazy loading
+        function setupLazyLoading() {
+            const lazyImages = document.querySelectorAll('.lazy-image');
+            
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src;
+                        img.addEventListener('load', () => {
+                            img.classList.add('loaded');
+                        });
+                        observer.unobserve(img);
+                    }
+                });
+            });
+
+            lazyImages.forEach(img => imageObserver.observe(img));
+        }
+
+        // Handle search
+        function handleSearch(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            filteredPhotos = photoData.filter(photo => 
+                photo.title.toLowerCase().includes(searchTerm) ||
+                photo.description.toLowerCase().includes(searchTerm)
+            );
+            displayedPhotos = 6;
+            renderGallery();
+        }
+
+        // Handle filter
+        function handleFilter(category) {
+            if (category === 'all') {
+                filteredPhotos = [...photoData];
+            } else {
+                filteredPhotos = photoData.filter(photo => photo.category === category);
+            }
+            displayedPhotos = 6;
+            renderGallery();
+        }
+
+        // Load more photos
+        function loadMorePhotos() {
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            loadingIndicator.style.display = 'block';
+            
+            setTimeout(() => {
+                displayedPhotos += 6;
+                renderGallery();
+                loadingIndicator.style.display = 'none';
+            }, 500);
+        }
+
+        // Lightbox functions
+        function openLightbox(index) {
+            currentImageIndex = index;
+            const photo = filteredPhotos[index];
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImage = document.getElementById('lightboxImage');
+            const imageInfo = document.getElementById('imageInfo');
+            const imageCounter = document.getElementById('imageCounter');
+
+            lightboxImage.src = photo.src;
+            imageInfo.textContent = photo.title;
+            imageCounter.textContent = `${index + 1} / ${filteredPhotos.length}`;
+            
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function previousImage() {
+            currentImageIndex = currentImageIndex > 0 ? currentImageIndex - 1 : filteredPhotos.length - 1;
+            openLightbox(currentImageIndex);
+        }
+
+        function nextImage() {
+            currentImageIndex = currentImageIndex < filteredPhotos.length - 1 ? currentImageIndex + 1 : 0;
+            openLightbox(currentImageIndex);
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initGallery);
+
+        // INSTRUCTIONS FOR ADDING REAL GOOGLE PHOTOS:
+        // 1. Replace the photoData array above with your actual photo URLs from Google Photos
+        // 2. To get individual photo URLs from Google Photos:
+        //    - Open your shared album
+        //    - Click on each photo
+        //    - Click Share button
+        //    - Copy the individual photo link
+        //    - Use that link in the src field
+        // 3. Update the title, category, and description for each photo
+        // 4. You can add more categories by updating the filter buttons and CSS
+
+        console.log(`
+🎨 AKPR's Gallery Instructions:
+=====================================
+1. Thay thế URLs trong mảng photoData bằng links từ Google Photos
+2. Cập nhật title, category, description cho mỗi ảnh  
+3. Để nhúng vào Google Sites: Insert → Embed → Custom HTML
+4. Gallery tự động responsive và có lazy loading
+5. Support search, filter, và lightbox view
+        `);
+    </script>
+</body>
+</html>
