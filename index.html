@@ -13,6 +13,7 @@
         .z-menu-overlay { z-index: 999; }
         .z-call-button { z-index: 998; }
         .z-modal { z-index: 1001; }
+        .z-lightbox { z-index: 1002; }
         
         /* Minimal animations - Static, respectful design */
         * {
@@ -23,6 +24,15 @@
         /* Only essential menu slide and hover states */
         .mobile-menu {
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        
+        /* Lightbox animations - smooth and respectful */
+        .lightbox {
+            transition: opacity 0.3s ease, visibility 0.3s ease !important;
+        }
+        
+        .lightbox-image {
+            transition: transform 0.3s ease !important;
         }
         
         @media (hover: hover) {
@@ -180,6 +190,13 @@
             gap: 20px;
         }
         
+        /* Core values grid */
+        .core-values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        
         @media (max-width: 640px) {
             .gallery-grid {
                 grid-template-columns: 1fr;
@@ -193,6 +210,10 @@
                 grid-template-columns: repeat(2, 1fr);
                 gap: 12px;
             }
+            .core-values-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
         }
         
         /* Image aspect ratio maintained */
@@ -200,12 +221,18 @@
             aspect-ratio: 4/3;
             overflow: hidden;
             border-radius: 8px;
+            cursor: pointer;
         }
         
         .gallery-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 0.3s ease !important;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.05);
         }
         
         .cemetery-item {
@@ -213,6 +240,7 @@
             overflow: hidden;
             border-radius: 8px;
             background: #1f2937;
+            cursor: pointer;
         }
         
         .cemetery-item img {
@@ -224,6 +252,260 @@
         
         .cemetery-item:hover img {
             transform: scale(1.05);
+        }
+        
+        /* Clickable team image */
+        .team-image {
+            cursor: pointer;
+            transition: transform 0.3s ease !important;
+        }
+        
+        .team-image:hover {
+            transform: scale(1.02);
+        }
+        
+        /* Core Values Card Styles */
+        .core-value-card {
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+            border: 2px solid #374151;
+            border-radius: 12px;
+            padding: 32px 24px;
+            text-align: center;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .core-value-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #b8860b 0%, #d4af37 100%);
+        }
+        
+        .core-value-icon {
+            font-size: 3.5rem;
+            color: #b8860b;
+            margin-bottom: 16px;
+        }
+        
+        .core-value-title {
+            color: #b8860b;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .core-value-description {
+            color: #d1d5db;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 16px;
+            flex-grow: 1;
+        }
+        
+        .core-value-list {
+            color: #9ca3af;
+            font-size: 0.9rem;
+            text-align: left;
+            line-height: 1.5;
+        }
+        
+        .core-value-list li {
+            margin-bottom: 8px;
+            padding-left: 16px;
+            position: relative;
+        }
+        
+        .core-value-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #b8860b;
+            font-weight: bold;
+        }
+        
+        /* LIGHTBOX STYLES */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 1002;
+        }
+        
+        .lightbox.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .lightbox-container {
+            position: relative;
+            max-width: 95vw;
+            max-height: 95vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .lightbox-image {
+            max-width: 100%;
+            max-height: 95vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        
+        /* Lightbox controls */
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            border-radius: 50%;
+            color: #b8860b;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1003;
+        }
+        
+        .lightbox-close:hover {
+            background: rgba(0, 0, 0, 0.9);
+        }
+        
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            border-radius: 50%;
+            color: #b8860b;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1003;
+        }
+        
+        .lightbox-nav:hover {
+            background: rgba(0, 0, 0, 0.9);
+        }
+        
+        .lightbox-nav.prev {
+            left: 20px;
+        }
+        
+        .lightbox-nav.next {
+            right: 20px;
+        }
+        
+        .lightbox-counter {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: #b8860b;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .lightbox-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #b8860b;
+            font-size: 24px;
+            z-index: 1003;
+        }
+        
+        .lightbox-caption {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            max-width: 90%;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        /* Mobile optimizations for lightbox */
+        @media (max-width: 640px) {
+            .lightbox-close {
+                top: 10px;
+                right: 10px;
+                width: 44px;
+                height: 44px;
+                font-size: 20px;
+            }
+            
+            .lightbox-nav {
+                width: 44px;
+                height: 44px;
+                font-size: 18px;
+            }
+            
+            .lightbox-nav.prev {
+                left: 10px;
+            }
+            
+            .lightbox-nav.next {
+                right: 10px;
+            }
+            
+            .lightbox-counter {
+                bottom: 10px;
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+            
+            .lightbox-caption {
+                bottom: 50px;
+                font-size: 12px;
+                padding: 8px 12px;
+            }
+        }
+        
+        /* Loading animation */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .spinner {
+            animation: spin 1s linear infinite !important;
         }
         
         /* Content spacing system - 8px grid */
@@ -319,6 +601,33 @@
     <!-- Menu Backdrop -->
     <div id="menu-backdrop" class="menu-backdrop z-menu-overlay"></div>
 
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox z-lightbox" role="dialog" aria-modal="true" aria-labelledby="lightbox-title">
+        <div class="lightbox-container">
+            <button id="lightbox-close" class="lightbox-close touch-target" aria-label="Đóng hình ảnh">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <button id="lightbox-prev" class="lightbox-nav prev touch-target" aria-label="Hình trước">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            
+            <button id="lightbox-next" class="lightbox-nav next touch-target" aria-label="Hình sau">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            
+            <div id="lightbox-loading" class="lightbox-loading">
+                <i class="fas fa-spinner spinner"></i>
+            </div>
+            
+            <img id="lightbox-image" class="lightbox-image" alt="" />
+            
+            <div id="lightbox-counter" class="lightbox-counter">1 / 1</div>
+            
+            <div id="lightbox-caption" class="lightbox-caption"></div>
+        </div>
+    </div>
+
     <!-- Fixed Header - Z-index 1000 -->
     <header class="header-fixed z-header">
         <div class="container-safe">
@@ -335,6 +644,7 @@
                 <!-- Desktop Navigation -->
                 <nav class="hidden lg:flex space-x-8">
                     <a href="#gioi-thieu" class="hover-gold focus-visible">Giới thiệu</a>
+                    <a href="#gia-tri-cot-loi" class="hover-gold focus-visible">Giá trị</a>
                     <a href="#dich-vu" class="hover-gold focus-visible">Dịch vụ</a>
                     <a href="#bang-gia" class="hover-gold focus-visible">Bảng giá</a>
                     <a href="#gallery" class="hover-gold focus-visible">Hình ảnh</a>
@@ -361,6 +671,7 @@
         </button>
         <div class="px-6 pt-4">
             <a href="#gioi-thieu" class="block py-4 border-b border-gray-700 hover-gold focus-visible">Giới thiệu</a>
+            <a href="#gia-tri-cot-loi" class="block py-4 border-b border-gray-700 hover-gold focus-visible">Giá trị cốt lõi</a>
             <a href="#dich-vu" class="block py-4 border-b border-gray-700 hover-gold focus-visible">Dịch vụ</a>
             <a href="#bang-gia" class="block py-4 border-b border-gray-700 hover-gold focus-visible">Bảng giá</a>
             <a href="#gallery" class="block py-4 border-b border-gray-700 hover-gold focus-visible">Hình ảnh</a>
@@ -392,55 +703,142 @@
             </div>
         </section>
 
-        <!-- Giới thiệu Section -->
+        <!-- THƯ NGỎ TỪ BAN LÃNH ĐẠO Section -->
         <section id="gioi-thieu" class="bg-gray-800 section-padding">
             <div class="container-safe">
-                <h2 class="text-section font-bold text-gold mb-8 text-center">GIỚI THIỆU VỀ TANG LỄ YÊN BÌNH</h2>
+                <h2 class="text-section font-bold text-gold mb-8 text-center">THƯ NGỎ TỪ BAN LÃNH ĐẠO MAI TÁNG YÊN BÌNH</h2>
                 
-                <!-- Team Image -->
+                <!-- Team Image - Clickable, maintained position -->
                 <div class="flex justify-center mb-8">
                     <img src="https://page1.genspark.site/v1/base64_upload/ec939ed68c137035688e12c76af26b57" 
-                         alt="Đội ngũ Tang Lễ Yên Bình" 
-                         class="max-w-full h-auto rounded-lg shadow-lg">
+                         alt="Đội ngũ Tang Lễ Yên Bình chuyên nghiệp" 
+                         class="max-w-full h-auto rounded-lg shadow-lg team-image lightbox-trigger"
+                         data-lightbox="team"
+                         data-caption="Đội ngũ Tang Lễ Yên Bình - Chuyên nghiệp, tận tâm, phục vụ 24/7">
                 </div>
                 
-                <div class="grid md:grid-cols-2 gap-8">
-                    <div>
-                        <h3 class="text-xl font-bold text-gold mb-4">Lịch sử thành lập</h3>
-                        <p class="text-gray-300 mb-4 leading-relaxed">
-                            Tang Lễ Yên Bình được thành lập với sứ mệnh "Đồng hành cùng gia đình trong giây phút khó khăn". 
-                            Với nhiều năm kinh nghiệm, chúng tôi trở thành đơn vị hàng đầu tại Phan Rang-Tháp Chàm.
+                <div class="max-w-4xl mx-auto">
+                    <div class="text-gray-300 leading-relaxed space-y-6">
+                        <p class="text-lg">
+                            Khi mất mát ập đến, gia đình không chỉ đối mặt với nỗi đau thương mà còn phải lo liệu nhiều công việc trong thời gian ngắn và đầy cảm xúc. Trong hoàn cảnh ấy, một lễ tiễn biệt không đơn thuần là thủ tục – đó là <strong class="text-gold">hành trình cuối cùng đầy yêu thương và kính trọng</strong> dành cho người đã khuất.
                         </p>
-                        <h3 class="text-xl font-bold text-gold mb-4">Sứ mệnh</h3>
-                        <p class="text-gray-300 leading-relaxed">
-                            Mang đến những dịch vụ tang lễ trang trọng, chu đáo và đầy nghĩa tình. Chúng tôi hiểu rằng 
-                            đây là khoảnh khắc thiêng liêng, cần sự tôn kính và chuyên nghiệp tuyệt đối.
+                        
+                        <p class="text-lg">
+                            <strong class="text-gold">Mai Táng Yên Bình</strong> ra đời từ sự thấu hiểu sâu sắc điều đó. Chúng tôi mong muốn đồng hành cùng gia đình để mỗi lễ tang không chỉ diễn ra <strong class="text-gold">trang nghiêm</strong>, <strong class="text-gold">chỉnh chu</strong>, mà còn chứa đựng <strong class="text-gold">tình cảm chân thành</strong> và <strong class="text-gold">giá trị tâm linh thiêng liêng</strong>.
                         </p>
+                        
+                        <p class="text-lg">
+                            Với sứ mệnh <strong class="text-gold">"Đồng hành cùng gia đình trong giây phút khó khăn"</strong>, chúng tôi cam kết đem đến dịch vụ mai táng trọn gói theo nghi thức <strong class="text-gold">Phật giáo</strong>, <strong class="text-gold">Công giáo</strong> và các phong tục truyền thống khác – với sự:
+                        </p>
+                        
+                        <ul class="text-lg space-y-3 pl-6">
+                            <li class="flex items-start">
+                                <span class="text-gold mr-3">•</span>
+                                <span><strong class="text-gold">MINH BẠCH</strong> trong chi phí và quy trình,</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-gold mr-3">•</span>
+                                <span><strong class="text-gold">ĐÚNG GIỜ</strong> trong mọi nghi lễ,</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-gold mr-3">•</span>
+                                <span><strong class="text-gold">LINH HOẠT</strong> theo nhu cầu và tín ngưỡng riêng của từng gia đình.</span>
+                            </li>
+                        </ul>
+                        
+                        <p class="text-lg">
+                            Chúng tôi tin rằng, bằng sự tận tâm và chuyên nghiệp, Mai Táng Yên Bình sẽ không chỉ là đơn vị cung cấp dịch vụ, mà còn là <strong class="text-gold">người bạn đồng hành tin cậy</strong>, giúp gia đình vơi bớt gánh nặng để có thể lặng lẽ tiễn biệt trong yêu thương.
+                        </p>
+                        
+                        <div class="mt-8 text-right">
+                            <p class="text-gray-400 mb-2">Trân trọng,</p>
+                            <p class="text-gold font-bold text-lg">Ban Lãnh Đạo Mai Táng Yên Bình</p>
+                        </div>
                     </div>
-                    <div>
-                        <h3 class="text-xl font-bold text-gold mb-4">Tầm nhìn</h3>
-                        <p class="text-gray-300 mb-4 leading-relaxed">
-                            Trở thành đơn vị dẫn đầu miền Nam về dịch vụ tang lễ, với tiêu chuẩn chất lượng quốc tế 
-                            và giá trị nhân văn sâu sắc.
+                </div>
+                
+                <div class="mt-12 text-center">
+                    <a href="tel:0785877755" class="bg-gold text-black px-8 py-4 rounded-lg text-lg font-bold hover-bg-gold focus-visible touch-target">
+                        <i class="fas fa-phone mr-2"></i>Liên hệ tư vấn: 0785877755
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- GIÁ TRỊ CỐT LÕI Section - NEW PROMINENT SECTION -->
+        <section id="gia-tri-cot-loi" class="bg-gray-900 section-padding">
+            <div class="container-safe">
+                <h2 class="text-section font-bold text-gold mb-4 text-center">GIÁ TRỊ CỐT LÕI</h2>
+                <p class="text-center text-gray-300 mb-12 text-lg">Ba trụ cột nền tảng định hình chất lượng dịch vụ Tang Lễ Yên Bình</p>
+                
+                <div class="core-values-grid">
+                    <!-- Giá trị 1: MINH BẠCH -->
+                    <div class="core-value-card">
+                        <div class="core-value-icon">💎</div>
+                        <h3 class="core-value-title">MINH BẠCH</h3>
+                        <p class="core-value-description">
+                            Cam kết minh bạch về chi phí và quy trình dịch vụ, không phát sinh chi phí ngoài thỏa thuận
                         </p>
-                        <h3 class="text-xl font-bold text-gold mb-4">Thành tựu</h3>
-                        <ul class="text-gray-300 space-y-2">
-                            <li>• Sở hữu nghĩa trang tư nhân lớn nhất tỉnh Ninh Thuận</li>
-                            <li>• Phục vụ hàng nghìn gia đình với tỷ lệ hài lòng 95%+</li>
-                            <li>• Đánh giá 5.0/5 sao trên Google Maps</li>
-                            <li>• Đội ngũ chuyên nghiệp, tận tâm 24/7</li>
+                        <ul class="core-value-list">
+                            <li>Báo giá chi tiết, rõ ràng từ đầu</li>
+                            <li>Hợp đồng minh bạch, không điều khoản ẩn</li>
+                            <li>Không phát sinh chi phí bất ngờ</li>
+                            <li>Gia đình hoàn toàn yên tâm về tài chính</li>
+                            <li>Minh bạch trong từng khâu thực hiện</li>
                         </ul>
                     </div>
+
+                    <!-- Giá trị 2: ĐÚNG GIỜ -->
+                    <div class="core-value-card">
+                        <div class="core-value-icon">⏰</div>
+                        <h3 class="core-value-title">ĐÚNG GIỜ</h3>
+                        <p class="core-value-description">
+                            Đảm bảo thời gian thực hiện các nghi lễ đúng cam kết, tôn trọng thời gian của gia đình và khách viếng
+                        </p>
+                        <ul class="core-value-list">
+                            <li>Lịch trình được lên kế hoạch chặt chẽ</li>
+                            <li>Đội ngũ luôn sẵn sàng đúng giờ hẹn</li>
+                            <li>Không để gia đình và khách chờ đợi</li>
+                            <li>Tuân thủ nghiêm ngặt giờ giấc nghi lễ</li>
+                            <li>Phối hợp đồng bộ các khâu dịch vụ</li>
+                        </ul>
+                    </div>
+
+                    <!-- Giá trị 3: LINH HOẠT -->
+                    <div class="core-value-card">
+                        <div class="core-value-icon">🤝</div>
+                        <h3 class="core-value-title">LINH HOẠT</h3>
+                        <p class="core-value-description">
+                            Thích ứng với mọi yêu cầu đặc biệt, đáp ứng linh hoạt theo nghi thức tôn giáo và mong muốn của mỗi gia đình
+                        </p>
+                        <ul class="core-value-list">
+                            <li>Tôn trọng mong muốn của mỗi gia đình</li>
+                            <li>Thích ứng theo nghi thức tôn giáo</li>
+                            <li>Tùy chỉnh theo văn hóa, truyền thống</li>
+                            <li>Luôn lắng nghe và điều chỉnh phù hợp</li>
+                            <li>Đáp ứng yêu cầu đặc biệt của gia đình</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="mt-12 text-center">
+                    <p class="text-gray-300 text-lg mb-6">
+                        Ba giá trị cốt lõi này là nền tảng cho mọi hoạt động của Tang Lễ Yên Bình, 
+                        đảm bảo mang đến trải nghiệm dịch vụ tốt nhất cho gia đình trong giây phút khó khăn.
+                    </p>
+                    <a href="tel:0785877755" class="bg-gold text-black px-8 py-4 rounded-lg text-lg font-bold hover-bg-gold focus-visible touch-target">
+                        <i class="fas fa-phone mr-2"></i>Liên hệ tư vấn: 0785877755
+                    </a>
                 </div>
             </div>
         </section>
 
         <!-- Tại sao chọn chúng tôi -->
-        <section class="bg-gray-900 section-padding">
+        <section class="bg-gray-800 section-padding">
             <div class="container-safe">
                 <h2 class="text-section font-bold text-gold mb-8 text-center">TẠI SAO CHỌN TANG LỄ YÊN BÌNH</h2>
                 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div class="bg-gray-800 p-6 rounded-lg">
+                    <div class="bg-gray-900 p-6 rounded-lg">
                         <div class="text-gold text-3xl mb-4"><i class="fas fa-mountain"></i></div>
                         <h3 class="text-lg font-bold text-gold mb-3">Nghĩa Trang Lớn Nhất Tỉnh</h3>
                         <p class="text-gray-300 text-sm leading-relaxed">
@@ -449,7 +847,7 @@
                         </p>
                     </div>
                     
-                    <div class="bg-gray-800 p-6 rounded-lg">
+                    <div class="bg-gray-900 p-6 rounded-lg">
                         <div class="text-gold text-3xl mb-4"><i class="fas fa-clock"></i></div>
                         <h3 class="text-lg font-bold text-gold mb-3">Phục Vụ 24/7</h3>
                         <p class="text-gray-300 text-sm leading-relaxed">
@@ -458,7 +856,7 @@
                         </p>
                     </div>
                     
-                    <div class="bg-gray-800 p-6 rounded-lg">
+                    <div class="bg-gray-900 p-6 rounded-lg">
                         <div class="text-gold text-3xl mb-4"><i class="fas fa-users"></i></div>
                         <h3 class="text-lg font-bold text-gold mb-3">Đội Ngũ Chuyên Nghiệp</h3>
                         <p class="text-gray-300 text-sm leading-relaxed">
@@ -467,7 +865,7 @@
                         </p>
                     </div>
                     
-                    <div class="bg-gray-800 p-6 rounded-lg">
+                    <div class="bg-gray-900 p-6 rounded-lg">
                         <div class="text-gold text-3xl mb-4"><i class="fas fa-cogs"></i></div>
                         <h3 class="text-lg font-bold text-gold mb-3">Trang Thiết Bị Hiện Đại</h3>
                         <p class="text-gray-300 text-sm leading-relaxed">
@@ -476,7 +874,7 @@
                         </p>
                     </div>
                     
-                    <div class="bg-gray-800 p-6 rounded-lg">
+                    <div class="bg-gray-900 p-6 rounded-lg">
                         <div class="text-gold text-3xl mb-4"><i class="fas fa-handshake"></i></div>
                         <h3 class="text-lg font-bold text-gold mb-3">Chi Phí Minh Bạch</h3>
                         <p class="text-gray-300 text-sm leading-relaxed">
@@ -485,7 +883,7 @@
                         </p>
                     </div>
                     
-                    <div class="bg-gray-800 p-6 rounded-lg">
+                    <div class="bg-gray-900 p-6 rounded-lg">
                         <div class="text-gold text-3xl mb-4"><i class="fas fa-heart"></i></div>
                         <h3 class="text-lg font-bold text-gold mb-3">Đồng Hành Tận Tâm</h3>
                         <p class="text-gray-300 text-sm leading-relaxed">
@@ -497,81 +895,81 @@
             </div>
         </section>
 
-        <!-- HỆ THỐNG NGHĨA TRANG TƯ NHÂN Section -->
-        <section id="nghia-trang" class="bg-gray-800 section-padding">
+        <!-- HỆ THỐNG NGHĨA TRANG TƯ NHÂN Section - FIRST -->
+        <section id="nghia-trang" class="bg-gray-900 section-padding">
             <div class="container-safe">
                 <h2 class="text-section font-bold text-gold mb-4 text-center">HỆ THỐNG NGHĨA TRANG TƯ NHÂN</h2>
                 <p class="text-center text-gray-300 mb-8">Nghĩa trang tư nhân lớn nhất tỉnh Ninh Thuận với không gian yên tĩnh, trang nghiêm</p>
                 
                 <div class="cemetery-grid">
-                    <div class="cemetery-item">
+                    <div class="cemetery-item lightbox-trigger" data-lightbox="cemetery" data-caption="Khu mộ hiện đại với thiết kế trang trọng">
                         <img src="https://page1.genspark.site/v1/base64_upload/95d9e1ce60f016b83251c90db07f6ed8" 
                              alt="Nghĩa trang hiện đại với mộ trắng" 
                              loading="lazy">
-                        <div class="p-3 bg-gray-900">
+                        <div class="p-3 bg-gray-800">
                             <p class="text-sm text-gray-300">Khu mộ hiện đại với thiết kế trang trọng</p>
                         </div>
                     </div>
                     
-                    <div class="cemetery-item">
+                    <div class="cemetery-item lightbox-trigger" data-lightbox="cemetery" data-caption="Toàn cảnh nghĩa trang trong ánh hoàng hôn">
                         <img src="https://page1.genspark.site/v1/base64_upload/b346aca1c6ec0102e60995a50c36c1c1" 
                              alt="Toàn cảnh nghĩa trang golden hour" 
                              loading="lazy">
-                        <div class="p-3 bg-gray-900">
+                        <div class="p-3 bg-gray-800">
                             <p class="text-sm text-gray-300">Toàn cảnh nghĩa trang trong ánh hoàng hôn</p>
                         </div>
                     </div>
                     
-                    <div class="cemetery-item">
+                    <div class="cemetery-item lightbox-trigger" data-lightbox="cemetery" data-caption="Khu mộ phần với thiết kế đa dạng">
                         <img src="https://page1.genspark.site/v1/base64_upload/6d0f8a1ed0e8fac3482c2579404cd483" 
                              alt="Khu mộ phần đa dạng" 
                              loading="lazy">
-                        <div class="p-3 bg-gray-900">
+                        <div class="p-3 bg-gray-800">
                             <p class="text-sm text-gray-300">Khu mộ phần với thiết kế đa dạng</p>
                         </div>
                     </div>
                     
-                    <div class="cemetery-item">
+                    <div class="cemetery-item lightbox-trigger" data-lightbox="cemetery" data-caption="Hệ thống đường nội bộ thoáng đãng">
                         <img src="https://page1.genspark.site/v1/base64_upload/51ec584619df0cdd620772ea7330faac" 
                              alt="Đường nội bộ thoáng đãng" 
                              loading="lazy">
-                        <div class="p-3 bg-gray-900">
+                        <div class="p-3 bg-gray-800">
                             <p class="text-sm text-gray-300">Hệ thống đường nội bộ thoáng đãng</p>
                         </div>
                     </div>
                     
-                    <div class="cemetery-item">
+                    <div class="cemetery-item lightbox-trigger" data-lightbox="cemetery" data-caption="Cảnh quan thiên nhiên xanh mát">
                         <img src="https://page1.genspark.site/v1/base64_upload/330644035e15da0d8ef4fcb9803fbd41" 
                              alt="Cảnh quan thiên nhiên xanh mát" 
                              loading="lazy">
-                        <div class="p-3 bg-gray-900">
+                        <div class="p-3 bg-gray-800">
                             <p class="text-sm text-gray-300">Cảnh quan thiên nhiên xanh mát</p>
                         </div>
                     </div>
                     
-                    <div class="cemetery-item">
+                    <div class="cemetery-item lightbox-trigger" data-lightbox="cemetery" data-caption="Không gian rộng lớn với núi non hùng vĩ">
                         <img src="https://page1.genspark.site/v1/base64_upload/bfc141324b2bb19716a9402e4693ec6e" 
                              alt="Không gian rộng lớn với núi non" 
                              loading="lazy">
-                        <div class="p-3 bg-gray-900">
+                        <div class="p-3 bg-gray-800">
                             <p class="text-sm text-gray-300">Không gian rộng lớn với núi non hùng vĩ</p>
                         </div>
                     </div>
                     
-                    <div class="cemetery-item">
+                    <div class="cemetery-item lightbox-trigger" data-lightbox="cemetery" data-caption="Khu vực đa dạng mẫu mộ theo yêu cầu">
                         <img src="https://page1.genspark.site/v1/base64_upload/b93ac82b2b0b255400e476993308199d" 
                              alt="Khu vực đa dạng mẫu mộ" 
                              loading="lazy">
-                        <div class="p-3 bg-gray-900">
+                        <div class="p-3 bg-gray-800">
                             <p class="text-sm text-gray-300">Khu vực đa dạng mẫu mộ theo yêu cầu</p>
                         </div>
                     </div>
                     
-                    <div class="cemetery-item">
+                    <div class="cemetery-item lightbox-trigger" data-lightbox="cemetery" data-caption="Cổng chính nghĩa trang Huyện Ninh Hải">
                         <img src="https://page1.genspark.site/v1/base64_upload/65af12bcf77c7c8eb8c31d190af64c5c" 
                              alt="Cổng chính Nghĩa Trang Huyện Ninh Hải" 
                              loading="lazy">
-                        <div class="p-3 bg-gray-900">
+                        <div class="p-3 bg-gray-800">
                             <p class="text-sm text-gray-300">Cổng chính nghĩa trang Huyện Ninh Hải</p>
                         </div>
                     </div>
@@ -580,21 +978,75 @@
                 <div class="mt-8 text-center">
                     <h3 class="text-xl font-bold text-gold mb-4">ƯU ĐIỂM NGHĨA TRANG YÊN BÌNH</h3>
                     <div class="grid md:grid-cols-3 gap-6 mt-6">
-                        <div class="bg-gray-900 p-4 rounded-lg">
+                        <div class="bg-gray-800 p-4 rounded-lg">
                             <i class="fas fa-expand-arrows-alt text-gold text-2xl mb-3"></i>
                             <h4 class="font-bold text-white mb-2">Diện Tích Lớn Nhất</h4>
                             <p class="text-gray-300 text-sm">Quy hoạch khoa học, đường xá thuận tiện</p>
                         </div>
-                        <div class="bg-gray-900 p-4 rounded-lg">
+                        <div class="bg-gray-800 p-4 rounded-lg">
                             <i class="fas fa-leaf text-gold text-2xl mb-3"></i>
                             <h4 class="font-bold text-white mb-2">Cảnh Quan Tự Nhiên</h4>
                             <p class="text-gray-300 text-sm">Không gian yên tĩnh, trang nghiêm</p>
                         </div>
-                        <div class="bg-gray-900 p-4 rounded-lg">
+                        <div class="bg-gray-800 p-4 rounded-lg">
                             <i class="fas fa-shield-alt text-gold text-2xl mb-3"></i>
                             <h4 class="font-bold text-white mb-2">An Ninh 24/7</h4>
                             <p class="text-gray-300 text-sm">Bảo vệ an toàn, thuận tiện thăm viếng</p>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gallery Section - MOVED TO SECOND -->
+        <section id="gallery" class="bg-gray-800 section-padding">
+            <div class="container-safe">
+                <h2 class="text-section font-bold text-gold mb-8 text-center">HÌNH ẢNH DỊCH VỤ TANG LỄ</h2>
+                <div class="gallery-grid">
+                    <div class="gallery-item lightbox-trigger" data-lightbox="service" data-caption="Quan tài gỗ cao cấp với hoa tươi trang trí">
+                        <img src="https://page1.genspark.site/v1/base64_upload/b44ce957bebda3ecb173451a4a7990dd" 
+                             alt="Quan tài gỗ cao cấp với hoa tươi" 
+                             loading="lazy">
+                    </div>
+                    <div class="gallery-item lightbox-trigger" data-lightbox="service" data-caption="Linh đường trang trọng với trang trí hoa">
+                        <img src="https://page1.genspark.site/v1/base64_upload/5044b3f177f5ebf9902dafa34e52c6e0" 
+                             alt="Linh đường trang trọng với trang trí hoa" 
+                             loading="lazy">
+                    </div>
+                    <div class="gallery-item lightbox-trigger" data-lightbox="service" data-caption="Tang lễ tổ chức tại nhà - trang trọng và chu đáo">
+                        <img src="https://page1.genspark.site/v1/base64_upload/fe6d242fd536dcb2ab2cc1a9bbadc599" 
+                             alt="Tang lễ tổ chức tại nhà" 
+                             loading="lazy">
+                    </div>
+                    <div class="gallery-item lightbox-trigger" data-lightbox="service" data-caption="Nhân viên tư vấn chuyên nghiệp hỗ trợ gia đình">
+                        <img src="https://page1.genspark.site/v1/base64_upload/f8e8298b6c0465fc23ac20d0c992702f" 
+                             alt="Nhân viên tư vấn chuyên nghiệp" 
+                             loading="lazy">
+                    </div>
+                    <div class="gallery-item lightbox-trigger" data-lightbox="service" data-caption="Lễ an táng tại nghĩa trang với nghi lễ trang trọng">
+                        <img src="https://page1.genspark.site/v1/base64_upload/d80ed323e22f7e32af739184e47582ec" 
+                             alt="Lễ an táng tại nghĩa trang" 
+                             loading="lazy">
+                    </div>
+                    <div class="gallery-item lightbox-trigger" data-lightbox="service" data-caption="Đội khiêng quan chuyên nghiệp trong trang phục lịch sự">
+                        <img src="https://page1.genspark.site/v1/base64_upload/13e8ed3863f630cd0d6dfce1eb2c11f6" 
+                             alt="Đội khiêng quan chuyên nghiệp" 
+                             loading="lazy">
+                    </div>
+                    <div class="gallery-item lightbox-trigger" data-lightbox="service" data-caption="Linh đường tại nhà với trang trí tinh tế">
+                        <img src="https://page1.genspark.site/v1/base64_upload/7117476d98aa6ab816e0ad6ab9dc16bd" 
+                             alt="Linh đường tại nhà" 
+                             loading="lazy">
+                    </div>
+                    <div class="gallery-item lightbox-trigger" data-lightbox="service" data-caption="Không gian trang trọng cho tang lễ">
+                        <img src="https://page1.genspark.site/v1/base64_upload/194f79f7a5ba07877e1b856278a5aefe" 
+                             alt="Không gian trang trọng" 
+                             loading="lazy">
+                    </div>
+                    <div class="gallery-item lightbox-trigger" data-lightbox="service" data-caption="Linh đường trong phòng được trang trí trang nghiêm">
+                        <img src="https://page1.genspark.site/v1/base64_upload/51c2f1c0679b819740b914e17457f295" 
+                             alt="Linh đường trong phòng" 
+                             loading="lazy">
                     </div>
                 </div>
             </div>
@@ -815,62 +1267,8 @@
             </div>
         </section>
 
-        <!-- Gallery Section -->
-        <section id="gallery" class="bg-gray-900 section-padding">
-            <div class="container-safe">
-                <h2 class="text-section font-bold text-gold mb-8 text-center">HÌNH ẢNH DỊCH VỤ</h2>
-                <div class="gallery-grid">
-                    <div class="gallery-item">
-                        <img src="https://page1.genspark.site/v1/base64_upload/b44ce957bebda3ecb173451a4a7990dd" 
-                             alt="Quan tài gỗ cao cấp với hoa tươi" 
-                             loading="lazy">
-                    </div>
-                    <div class="gallery-item">
-                        <img src="https://page1.genspark.site/v1/base64_upload/5044b3f177f5ebf9902dafa34e52c6e0" 
-                             alt="Linh đường trang trọng với trang trí hoa" 
-                             loading="lazy">
-                    </div>
-                    <div class="gallery-item">
-                        <img src="https://page1.genspark.site/v1/base64_upload/fe6d242fd536dcb2ab2cc1a9bbadc599" 
-                             alt="Tang lễ tổ chức tại nhà" 
-                             loading="lazy">
-                    </div>
-                    <div class="gallery-item">
-                        <img src="https://page1.genspark.site/v1/base64_upload/f8e8298b6c0465fc23ac20d0c992702f" 
-                             alt="Nhân viên tư vấn chuyên nghiệp" 
-                             loading="lazy">
-                    </div>
-                    <div class="gallery-item">
-                        <img src="https://page1.genspark.site/v1/base64_upload/d80ed323e22f7e32af739184e47582ec" 
-                             alt="Lễ an táng tại nghĩa trang" 
-                             loading="lazy">
-                    </div>
-                    <div class="gallery-item">
-                        <img src="https://page1.genspark.site/v1/base64_upload/13e8ed3863f630cd0d6dfce1eb2c11f6" 
-                             alt="Đội khiêng quan chuyên nghiệp" 
-                             loading="lazy">
-                    </div>
-                    <div class="gallery-item">
-                        <img src="https://page1.genspark.site/v1/base64_upload/7117476d98aa6ab816e0ad6ab9dc16bd" 
-                             alt="Linh đường tại nhà" 
-                             loading="lazy">
-                    </div>
-                    <div class="gallery-item">
-                        <img src="https://page1.genspark.site/v1/base64_upload/194f79f7a5ba07877e1b856278a5aefe" 
-                             alt="Không gian trang trọng" 
-                             loading="lazy">
-                    </div>
-                    <div class="gallery-item">
-                        <img src="https://page1.genspark.site/v1/base64_upload/51c2f1c0679b819740b914e17457f295" 
-                             alt="Linh đường trong phòng" 
-                             loading="lazy">
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <!-- Liên hệ Section -->
-        <section id="lien-he" class="bg-gray-800 section-padding">
+        <section id="lien-he" class="bg-gray-900 section-padding">
             <div class="container-safe">
                 <h2 class="text-section font-bold text-gold mb-8 text-center">THÔNG TIN LIÊN HỆ</h2>
                 <div class="grid lg:grid-cols-2 gap-8">
@@ -922,7 +1320,7 @@
         </section>
 
         <!-- Cam kết Section -->
-        <section class="bg-gray-900 section-padding">
+        <section class="bg-gray-800 section-padding">
             <div class="container-safe">
                 <h2 class="text-section font-bold text-gold mb-8 text-center">CAM KẾT DỊCH VỤ</h2>
                 <div class="grid md:grid-cols-2 gap-8">
@@ -1017,11 +1415,255 @@
             });
         });
         
+        // LIGHTBOX FUNCTIONALITY
+        class LightboxGallery {
+            constructor() {
+                this.lightbox = document.getElementById('lightbox');
+                this.lightboxImage = document.getElementById('lightbox-image');
+                this.lightboxCounter = document.getElementById('lightbox-counter');
+                this.lightboxCaption = document.getElementById('lightbox-caption');
+                this.lightboxLoading = document.getElementById('lightbox-loading');
+                this.closeBtn = document.getElementById('lightbox-close');
+                this.prevBtn = document.getElementById('lightbox-prev');
+                this.nextBtn = document.getElementById('lightbox-next');
+                
+                this.currentGallery = [];
+                this.currentIndex = 0;
+                this.isOpen = false;
+                
+                this.init();
+            }
+            
+            init() {
+                // Group images by gallery
+                this.galleries = {
+                    team: [],
+                    service: [],
+                    cemetery: []
+                };
+                
+                // Collect all lightbox trigger elements
+                const triggers = document.querySelectorAll('.lightbox-trigger');
+                triggers.forEach((trigger, index) => {
+                    const galleryName = trigger.dataset.lightbox;
+                    const imgElement = trigger.querySelector('img') || trigger;
+                    
+                    const imageData = {
+                        src: imgElement.src,
+                        alt: imgElement.alt,
+                        caption: trigger.dataset.caption || imgElement.alt,
+                        element: trigger
+                    };
+                    
+                    this.galleries[galleryName].push(imageData);
+                    
+                    // Add click event listener
+                    trigger.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        this.openLightbox(galleryName, this.galleries[galleryName].indexOf(imageData));
+                    });
+                });
+                
+                // Event listeners for controls
+                this.closeBtn.addEventListener('click', () => this.closeLightbox());
+                this.prevBtn.addEventListener('click', () => this.prevImage());
+                this.nextBtn.addEventListener('click', () => this.nextImage());
+                
+                // Keyboard navigation
+                document.addEventListener('keydown', (e) => {
+                    if (!this.isOpen) return;
+                    
+                    switch(e.key) {
+                        case 'Escape':
+                            this.closeLightbox();
+                            break;
+                        case 'ArrowLeft':
+                            this.prevImage();
+                            break;
+                        case 'ArrowRight':
+                            this.nextImage();
+                            break;
+                    }
+                });
+                
+                // Close on backdrop click
+                this.lightbox.addEventListener('click', (e) => {
+                    if (e.target === this.lightbox) {
+                        this.closeLightbox();
+                    }
+                });
+                
+                // Touch events for mobile
+                this.initTouchEvents();
+                
+                // Prevent body scroll when lightbox is open
+                this.lightbox.addEventListener('wheel', (e) => {
+                    if (this.isOpen) {
+                        e.preventDefault();
+                    }
+                });
+            }
+            
+            initTouchEvents() {
+                let startX = 0;
+                let startY = 0;
+                let moveX = 0;
+                let moveY = 0;
+                
+                this.lightboxImage.addEventListener('touchstart', (e) => {
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                }, { passive: true });
+                
+                this.lightboxImage.addEventListener('touchmove', (e) => {
+                    if (!startX || !startY) return;
+                    
+                    moveX = e.touches[0].clientX;
+                    moveY = e.touches[0].clientY;
+                    
+                    const diffX = startX - moveX;
+                    const diffY = startY - moveY;
+                    
+                    // Prevent default to avoid page scroll
+                    if (Math.abs(diffX) > Math.abs(diffY)) {
+                        e.preventDefault();
+                    }
+                }, { passive: false });
+                
+                this.lightboxImage.addEventListener('touchend', (e) => {
+                    if (!startX || !startY) return;
+                    
+                    const diffX = startX - moveX;
+                    const diffY = startY - moveY;
+                    
+                    // Swipe threshold
+                    const threshold = 50;
+                    
+                    if (Math.abs(diffX) > threshold && Math.abs(diffX) > Math.abs(diffY)) {
+                        if (diffX > 0) {
+                            // Swipe left - next image
+                            this.nextImage();
+                        } else {
+                            // Swipe right - previous image
+                            this.prevImage();
+                        }
+                    }
+                    
+                    // Reset values
+                    startX = 0;
+                    startY = 0;
+                    moveX = 0;
+                    moveY = 0;
+                }, { passive: true });
+            }
+            
+            openLightbox(galleryName, index) {
+                this.currentGallery = this.galleries[galleryName];
+                this.currentIndex = index;
+                this.isOpen = true;
+                
+                // Show lightbox
+                this.lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                
+                // Load image
+                this.loadImage();
+                
+                // Update navigation visibility
+                this.updateNavigation();
+                
+                // Announce to screen readers
+                this.lightbox.setAttribute('aria-live', 'polite');
+            }
+            
+            closeLightbox() {
+                this.isOpen = false;
+                this.lightbox.classList.remove('active');
+                document.body.style.overflow = '';
+                
+                // Clear image
+                this.lightboxImage.src = '';
+                this.lightboxImage.alt = '';
+            }
+            
+            loadImage() {
+                const imageData = this.currentGallery[this.currentIndex];
+                
+                // Show loading
+                this.lightboxLoading.style.display = 'block';
+                this.lightboxImage.style.opacity = '0';
+                
+                // Create new image to preload
+                const img = new Image();
+                img.onload = () => {
+                    this.lightboxImage.src = imageData.src;
+                    this.lightboxImage.alt = imageData.alt;
+                    this.lightboxCaption.textContent = imageData.caption;
+                    
+                    // Hide loading, show image
+                    this.lightboxLoading.style.display = 'none';
+                    this.lightboxImage.style.opacity = '1';
+                    
+                    // Update counter
+                    this.updateCounter();
+                };
+                img.onerror = () => {
+                    this.lightboxLoading.style.display = 'none';
+                    this.lightboxCaption.textContent = 'Không thể tải hình ảnh';
+                };
+                img.src = imageData.src;
+            }
+            
+            prevImage() {
+                if (this.currentGallery.length <= 1) return;
+                
+                this.currentIndex = this.currentIndex > 0 ? this.currentIndex - 1 : this.currentGallery.length - 1;
+                this.loadImage();
+                this.updateNavigation();
+            }
+            
+            nextImage() {
+                if (this.currentGallery.length <= 1) return;
+                
+                this.currentIndex = this.currentIndex < this.currentGallery.length - 1 ? this.currentIndex + 1 : 0;
+                this.loadImage();
+                this.updateNavigation();
+            }
+            
+            updateCounter() {
+                this.lightboxCounter.textContent = `${this.currentIndex + 1} / ${this.currentGallery.length}`;
+            }
+            
+            updateNavigation() {
+                // Hide navigation if only one image
+                if (this.currentGallery.length <= 1) {
+                    this.prevBtn.style.display = 'none';
+                    this.nextBtn.style.display = 'none';
+                } else {
+                    this.prevBtn.style.display = 'flex';
+                    this.nextBtn.style.display = 'flex';
+                }
+            }
+        }
+        
+        // Initialize lightbox when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            new LightboxGallery();
+        });
+        
         // Prevent zoom on input focus (mobile)
         const viewportMeta = document.querySelector('meta[name="viewport"]');
         if (viewportMeta) {
             viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
         }
     </script>
+    <script id="html_badge_script1">
+        window.__genspark_remove_badge_link = "https://www.genspark.ai/api/html_badge/" +
+            "remove_badge?token=To%2FBnjzloZ3UfQdcSaYfDnjIVGRGectq8MZ4JNvdTRYSgdcc8Vmo972hLvvD8%2BBoQJnXuBoMc1hmfoA0G8dmvMFi7CVQq2SFFxTS5m1MXX8JwVH0aCie3THIjns1CMw925O3SLtatpkHZaFBUy%2BYIQWbZj7qMwBaHakBou%2FxgatElzLWBNK1kBsBlCYe0Bi4hYGoo5J2%2Bx224gq5lHBbCdjEPQBsn5JWdQRSZxHDbAh00aMMNqvmIL7s8LrDbWcvOihfGB96ub%2B6dExIHORL7VUpY0iKxFK2eoscG%2FGyvrD7ja1Awv%2BqZ%2Fji79UHsCZRUYbKUihxCW7AtwEVv0uzr9oX943fahYgXG6VRM1F1EpK1rBC6r9BbI%2FkZsVTVhx0fTa3dKCTf29Y31azFXyZ%2FLaeFISql8tO84xr7q6TxtEkCGsuni%2FYBfYSdSngCQ41GRyyVsxgl3HgZFmcwdLwWWu5IHtS7ienvMQZBcUcMsv6zdePKIHOfvngoJknfltGWdmKXtL8u9ykOIpZ%2BiWHrMieExf1T41W9jgb9jbZQpA%3D";
+        window.__genspark_locale = "en-US";
+        window.__genspark_token = "To/BnjzloZ3UfQdcSaYfDnjIVGRGectq8MZ4JNvdTRYSgdcc8Vmo972hLvvD8+BoQJnXuBoMc1hmfoA0G8dmvMFi7CVQq2SFFxTS5m1MXX8JwVH0aCie3THIjns1CMw925O3SLtatpkHZaFBUy+YIQWbZj7qMwBaHakBou/xgatElzLWBNK1kBsBlCYe0Bi4hYGoo5J2+x224gq5lHBbCdjEPQBsn5JWdQRSZxHDbAh00aMMNqvmIL7s8LrDbWcvOihfGB96ub+6dExIHORL7VUpY0iKxFK2eoscG/GyvrD7ja1Awv+qZ/ji79UHsCZRUYbKUihxCW7AtwEVv0uzr9oX943fahYgXG6VRM1F1EpK1rBC6r9BbI/kZsVTVhx0fTa3dKCTf29Y31azFXyZ/LaeFISql8tO84xr7q6TxtEkCGsuni/YBfYSdSngCQ41GRyyVsxgl3HgZFmcwdLwWWu5IHtS7ienvMQZBcUcMsv6zdePKIHOfvngoJknfltGWdmKXtL8u9ykOIpZ+iWHrMieExf1T41W9jgb9jbZQpA=";
+    </script>
+    
+    <script id="html_notice_dialog_script" src="https://www.genspark.ai/notice_dialog.js"></script>
 </body>
 </html>
