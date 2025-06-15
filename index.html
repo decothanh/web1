@@ -4,1283 +4,584 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dịch Vụ Tang Lễ Yên Bình - Trọn Vẹn Nghĩa Tình</title>
-    <meta name="description" content="Dịch vụ tang lễ chuyên nghiệp tại Phan Rang-Tháp Chàm. Hotline 24/7: 0785877755. Trọn vẹn nghĩa tình, đồng hành cùng gia đình.">
     <link rel="icon" type="image/png" href="https://page1.genspark.site/v1/base64_upload/ebe6f7de4d8a1b4044b6f3afea8635ba">
-    
-    <!-- Preload critical resources -->
-    <link rel="preload" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" as="style">
-    <link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" as="style">
-    
-    <!-- Critical CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    
     <style>
-        :root {
-            --primary-gold: #b8860b;
-            --primary-black: #1a1a1a;
-            --bg-light: #fafafa;
-            --text-gray: #666;
-        }
+        /* Z-INDEX HIERARCHY - Critical for mobile menu accessibility */
+        .z-header { z-index: 1000; }
+        .z-menu-overlay { z-index: 999; }
+        .z-call-button { z-index: 998; }
+        .z-modal { z-index: 1001; }
         
+        /* NO ANIMATIONS - Static, respectful design */
         * {
-            scroll-behavior: smooth;
+            transition: none !important;
+            animation: none !important;
         }
         
+        /* Only essential hover states for desktop */
+        @media (hover: hover) {
+            .hover-gold:hover { color: #b8860b; }
+            .hover-bg-gold:hover { background-color: #b8860b; }
+        }
+        
+        /* Brand colors */
+        .bg-gold { background-color: #b8860b; }
+        .text-gold { color: #b8860b; }
+        .border-gold { border-color: #b8860b; }
+        
+        /* Mobile-first responsive design */
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            color: var(--primary-black);
-            background-color: var(--bg-light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+            -webkit-text-size-adjust: none;
+            touch-action: manipulation;
         }
         
-        /* Mobile-first responsive font sizes */
-        html { font-size: 16px; }
-        h1 { font-size: 1.75rem; }
-        h2 { font-size: 1.5rem; }
-        h3 { font-size: 1.25rem; }
-        p { font-size: 1rem; }
-        
-        @media (min-width: 768px) {
-            h1 { font-size: 2.5rem; }
-            h2 { font-size: 2rem; }
-            h3 { font-size: 1.5rem; }
-        }
-        
-        /* Custom styles */
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary-gold), #d4af37);
-            color: white;
-            min-height: 48px;
-            min-width: 120px;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(184, 134, 11, 0.3);
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(184, 134, 11, 0.4);
-        }
-        
-        .text-gold { color: var(--primary-gold); }
-        .bg-gold { background-color: var(--primary-gold); }
-        .border-gold { border-color: var(--primary-gold); }
-        
-        /* Header sticky */
-        .header-sticky {
+        /* Fixed header with proper positioning */
+        .header-fixed {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            z-index: 1000;
-            background: rgba(26, 26, 26, 0.95);
+            background: rgba(0, 0, 0, 0.95);
             backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
+            border-bottom: 1px solid #b8860b;
         }
         
-        /* Mobile navigation */
+        /* Mobile menu overlay */
         .mobile-menu {
-            transform: translateX(-100%);
-            transition: transform 0.3s ease;
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 280px;
+            height: 100vh;
+            background: #1a1a1a;
+            padding-top: 80px;
         }
         
         .mobile-menu.active {
-            transform: translateX(0);
+            left: 0;
         }
         
-        /* Gallery optimization */
+        /* Hamburger menu - always accessible */
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .hamburger span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background: #b8860b;
+            margin-bottom: 4px;
+        }
+        
+        /* Call button positioning - never overlaps menu */
+        .call-button-fixed {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        /* Touch targets minimum 44px */
+        .touch-target {
+            min-height: 44px;
+            min-width: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Gallery grid */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        @media (max-width: 640px) {
+            .gallery-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+        }
+        
+        /* Image aspect ratio maintained */
         .gallery-item {
             aspect-ratio: 4/3;
             overflow: hidden;
-            border-radius: 12px;
-            position: relative;
+            border-radius: 8px;
         }
         
         .gallery-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.3s ease;
         }
         
-        .gallery-item:hover img {
-            transform: scale(1.05);
+        /* Content spacing system - 8px grid */
+        .section-padding { padding: 40px 20px; }
+        
+        @media (max-width: 640px) {
+            .section-padding { padding: 24px 16px; }
         }
         
-        /* Lazy loading optimization */
-        img[data-src] {
-            opacity: 0;
-            transition: opacity 0.3s;
+        /* Typography scale */
+        .text-hero { font-size: clamp(1.5rem, 4vw, 2.5rem); }
+        .text-section { font-size: clamp(1.25rem, 3vw, 1.5rem); }
+        
+        /* No horizontal scroll */
+        .container-safe {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 16px;
         }
         
-        img[data-src].loaded {
-            opacity: 1;
+        @media (min-width: 1024px) {
+            .container-safe {
+                max-width: 1200px;
+                padding: 0 20px;
+            }
         }
         
-        /* Loading states */
-        .loading-skeleton {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
+        /* Content body offset for fixed header */
+        .content-body {
+            margin-top: 70px;
         }
         
-        @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-        
-        /* Back to top button */
-        .back-to-top {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: var(--primary-gold);
-            color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            z-index: 1000;
-        }
-        
-        .back-to-top.visible {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        /* Touch optimization */
-        .touch-target {
-            min-height: 44px;
-            min-width: 44px;
-        }
-        
-        /* Performance optimizations */
-        .will-change-transform {
-            will-change: transform;
-        }
-        
-        /* Swiper customization */
-        .swiper-button-next,
-        .swiper-button-prev {
-            color: var(--primary-gold);
-        }
-        
-        .swiper-pagination-bullet-active {
-            background: var(--primary-gold);
-        }
-        
-        /* Form improvements */
-        .form-input {
-            min-height: 48px;
-            border-radius: 8px;
-            border: 2px solid #e5e5e5;
-            padding: 12px 16px;
-            font-size: 16px;
-            transition: border-color 0.3s ease;
-        }
-        
-        .form-input:focus {
-            border-color: var(--primary-gold);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.1);
-        }
-        
-        /* Accessibility improvements */
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
-        }
-        
-        /* Focus states */
+        /* Accessibility focus states */
         .focus-visible:focus {
-            outline: 2px solid var(--primary-gold);
+            outline: 2px solid #b8860b;
             outline-offset: 2px;
+        }
+        
+        /* High contrast for readability */
+        .text-high-contrast {
+            color: #ffffff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
     </style>
 </head>
-<body>
-    <!-- Skip Navigation -->
-    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-gold text-white px-4 py-2 rounded">
-        Chuyển đến nội dung chính
-    </a>
+<body class="bg-gray-900 text-white">
 
-    <!-- Header -->
-    <header id="header" class="bg-black text-white relative z-50" role="banner">
-        <div class="container mx-auto px-4">
-            <!-- Top bar -->
-            <div class="py-2 border-b border-gray-700 text-sm">
-                <div class="flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
-                    <div class="flex items-center space-x-4">
-                        <a href="tel:0785877755" class="text-gold hover:text-yellow-300 flex items-center touch-target" aria-label="Gọi hotline 24/7">
-                            <i class="fas fa-phone mr-2"></i>
-                            <span class="font-semibold">0785877755</span>
-                        </a>
-                        <span class="hidden sm:inline">|</span>
-                        <span class="text-gray-400">24/7 Hỗ trợ</span>
-                    </div>
-                    <div class="flex items-center space-x-4 text-gray-400">
-                        <a href="mailto:tangleyenbinh@gmail.com" class="hover:text-gold touch-target" aria-label="Gửi email">
-                            <i class="fas fa-envelope mr-1"></i>
-                            <span class="hidden sm:inline">tangleyenbinh@gmail.com</span>
-                        </a>
+    <!-- Fixed Header - Z-index 1000 -->
+    <header class="header-fixed z-header">
+        <div class="container-safe">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <img src="https://page1.genspark.site/v1/base64_upload/ebe6f7de4d8a1b4044b6f3afea8635ba" alt="Tang Lễ Yên Bình Logo" class="h-10 w-auto">
+                    <div class="ml-3">
+                        <h1 class="text-lg font-bold text-gold">TANG LỄ YÊN BÌNH</h1>
+                        <p class="text-xs text-gray-300">Trọn Vẹn Nghĩa Tình</p>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Main header -->
-            <div class="py-4">
-                <div class="flex justify-between items-center">
-                    <!-- Logo -->
-                    <div class="flex items-center">
-                        <img src="https://page1.genspark.site/v1/base64_upload/ebe6f7de4d8a1b4044b6f3afea8635ba" alt="Tang Lễ Yên Bình Logo" class="h-12 w-12 mr-3">
-                        <div>
-                            <h1 class="text-xl font-bold text-gold">TANG LỄ YÊN BÌNH</h1>
-                            <p class="text-sm text-gray-400">Trọn Vẹn Nghĩa Tình</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Desktop Navigation -->
-                    <nav class="hidden lg:block" role="navigation">
-                        <ul class="flex space-x-8">
-                            <li><a href="#home" class="hover:text-gold transition-colors focus-visible touch-target">Trang chủ</a></li>
-                            <li><a href="#about" class="hover:text-gold transition-colors focus-visible touch-target">Giới thiệu</a></li>
-                            <li><a href="#services" class="hover:text-gold transition-colors focus-visible touch-target">Dịch vụ</a></li>
-                            <li><a href="#gallery" class="hover:text-gold transition-colors focus-visible touch-target">Hình ảnh</a></li>
-                            <li><a href="#contact" class="hover:text-gold transition-colors focus-visible touch-target">Liên hệ</a></li>
-                        </ul>
-                    </nav>
-                    
-                    <!-- Mobile menu button -->
-                    <button id="mobile-menu-btn" class="lg:hidden text-2xl touch-target focus-visible" aria-label="Mở menu di động" aria-expanded="false">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                </div>
+                
+                <!-- Mobile Menu Button - Always accessible -->
+                <button id="mobile-menu-btn" class="hamburger touch-target focus-visible" aria-label="Mở menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                
+                <!-- Desktop Navigation -->
+                <nav class="hidden lg:flex space-x-8">
+                    <a href="#gioi-thieu" class="hover-gold focus-visible">Giới thiệu</a>
+                    <a href="#dich-vu" class="hover-gold focus-visible">Dịch vụ</a>
+                    <a href="#gallery" class="hover-gold focus-visible">Hình ảnh</a>
+                    <a href="#lien-he" class="hover-gold focus-visible">Liên hệ</a>
+                    <a href="tel:0785877755" class="bg-gold text-black px-4 py-2 rounded hover-bg-gold focus-visible">
+                        <i class="fas fa-phone mr-2"></i>0785877755
+                    </a>
+                </nav>
             </div>
         </div>
-        
-        <!-- Mobile Navigation -->
-        <nav id="mobile-menu" class="mobile-menu lg:hidden fixed top-0 left-0 w-full h-full bg-black z-50" role="navigation">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-8">
-                    <div class="flex items-center">
-                        <img src="https://page1.genspark.site/v1/base64_upload/ebe6f7de4d8a1b4044b6f3afea8635ba" alt="Tang Lễ Yên Bình Logo" class="h-10 w-10 mr-3">
-                        <span class="text-gold font-bold text-lg">TANG LỄ YÊN BÌNH</span>
-                    </div>
-                    <button id="mobile-menu-close" class="text-2xl touch-target focus-visible" aria-label="Đóng menu">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <ul class="space-y-6">
-                    <li><a href="#home" class="block text-lg hover:text-gold transition-colors touch-target">Trang chủ</a></li>
-                    <li><a href="#about" class="block text-lg hover:text-gold transition-colors touch-target">Giới thiệu</a></li>
-                    <li><a href="#services" class="block text-lg hover:text-gold transition-colors touch-target">Dịch vụ</a></li>
-                    <li><a href="#gallery" class="block text-lg hover:text-gold transition-colors touch-target">Hình ảnh</a></li>
-                    <li><a href="#contact" class="block text-lg hover:text-gold transition-colors touch-target">Liên hệ</a></li>
-                </ul>
-                <div class="mt-8 pt-6 border-t border-gray-700">
-                    <a href="tel:0785877755" class="btn-primary inline-flex items-center justify-center w-full touch-target" aria-label="Gọi ngay hotline">
-                        <i class="fas fa-phone mr-2"></i>
-                        Gọi ngay: 0785877755
-                    </a>
-                </div>
-            </div>
-        </nav>
     </header>
 
+    <!-- Mobile Menu Overlay - Z-index 999 -->
+    <nav id="mobile-menu" class="mobile-menu z-menu-overlay">
+        <div class="px-6">
+            <a href="#gioi-thieu" class="block py-4 border-b border-gray-700 hover-gold focus-visible">Giới thiệu</a>
+            <a href="#dich-vu" class="block py-4 border-b border-gray-700 hover-gold focus-visible">Dịch vụ</a>
+            <a href="#gallery" class="block py-4 border-b border-gray-700 hover-gold focus-visible">Hình ảnh</a>
+            <a href="#lien-he" class="block py-4 border-b border-gray-700 hover-gold focus-visible">Liên hệ</a>
+            <a href="tel:0785877755" class="block py-4 text-gold font-bold focus-visible">
+                <i class="fas fa-phone mr-2"></i>Gọi ngay: 0785877755
+            </a>
+        </div>
+    </nav>
+
     <!-- Main Content -->
-    <main id="main-content">
+    <main class="content-body">
+        
         <!-- Hero Section -->
-        <section id="home" class="relative bg-gradient-to-br from-black via-gray-900 to-black text-white min-h-screen flex items-center" role="banner">
-            <div class="absolute inset-0 bg-black opacity-50"></div>
-            <div class="container mx-auto px-4 relative z-10 text-center" data-aos="fade-up">
-                <div class="max-w-4xl mx-auto">
-                    <img src="https://page1.genspark.site/v1/base64_upload/ebe6f7de4d8a1b4044b6f3afea8635ba" alt="Tang Lễ Yên Bình Logo" class="h-20 w-20 mx-auto mb-6">
-                    <h1 class="text-4xl md:text-6xl font-bold mb-6">
-                        DỊCH VỤ TANG LỄ <span class="text-gold">YÊN BÌNH</span>
-                    </h1>
-                    <p class="text-xl md:text-2xl mb-4 text-gold font-semibold">
-                        "Trọn Vẹn Nghĩa Tình"
-                    </p>
-                    <p class="text-lg md:text-xl mb-8 text-gray-300 max-w-2xl mx-auto">
-                        Đồng hành cùng gia đình trong giây phút khó khăn với dịch vụ tang lễ chuyên nghiệp và tận tâm
-                    </p>
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                        <a href="tel:0785877755" class="btn-primary inline-flex items-center px-8 py-4 text-lg touch-target" aria-label="Gọi hotline 24/7">
-                            <i class="fas fa-phone mr-3"></i>
-                            Hotline 24/7: 0785877755
-                        </a>
-                        <a href="sms:0785877755" class="bg-transparent border-2 border-gold text-gold hover:bg-gold hover:text-black px-8 py-4 rounded-lg transition-all font-semibold touch-target" aria-label="Nhắn tin tư vấn">
-                            <i class="fas fa-comment mr-3"></i>
-                            Nhắn tin tư vấn
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-                <a href="#about" class="text-gold text-2xl touch-target" aria-label="Cuộn xuống để xem thêm">
-                    <i class="fas fa-chevron-down"></i>
-                </a>
-            </div>
-        </section>
-
-        <!-- About Section -->
-        <section id="about" class="py-16 bg-white">
-            <div class="container mx-auto px-4">
-                <div class="text-center mb-12" data-aos="fade-up">
-                    <h2 class="text-3xl md:text-4xl font-bold mb-4 text-black">
-                        GIỚI THIỆU <span class="text-gold">TANG LỄ YÊN BÌNH</span>
-                    </h2>
-                    <div class="w-24 h-1 bg-gold mx-auto"></div>
-                </div>
-                
-                <div class="max-w-6xl mx-auto">
-                    <div class="grid lg:grid-cols-2 gap-12 items-center">
-                        <div data-aos="fade-right">
-                            <div class="relative rounded-2xl overflow-hidden shadow-2xl">
-                                <img data-src="https://page1.genspark.site/v1/base64_upload/ec939ed68c137035688e12c76af26b57" alt="Đội ngũ Tang Lễ Yên Bình chuyên nghiệp" class="w-full h-80 object-cover lazy-load">
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                            </div>
-                        </div>
-                        
-                        <div class="space-y-6" data-aos="fade-left">
-                            <h3 class="text-2xl font-bold text-black mb-4">
-                                Hơn 10 năm kinh nghiệm phục vụ
-                            </h3>
-                            <p class="text-gray-700 text-lg leading-relaxed">
-                                Tang Lễ Yên Bình là đơn vị hàng đầu tại thành phố Phan Rang-Tháp Chàm chuyên cung cấp dịch vụ tang lễ và mai táng trọn gói. Được thành lập với sứ mệnh <strong class="text-gold">"Đồng hành cùng gia đình trong giây phút khó khăn"</strong>, chúng tôi cam kết mang đến những dịch vụ tang lễ trang trọng, chu đáo và đầy nghĩa tình.
-                            </p>
-                            <p class="text-gray-700 text-lg leading-relaxed">
-                                Chúng tôi hiểu rằng khi người thân yêu ra đi là khoảnh khắc đau buồn và khó khăn nhất đối với mọi gia đình. Trong những giây phút thiêng liêng ấy, Tang Lễ Yên Bình sinh ra để chia sẻ gánh nặng, lo toan mọi việc để gia đình có thể dành trọn thời gian bên người thân.
-                            </p>
-                            <div class="bg-gray-50 p-6 rounded-xl">
-                                <h4 class="font-bold text-gold mb-3 text-lg">Sứ mệnh của chúng tôi:</h4>
-                                <ul class="space-y-2 text-gray-700">
-                                    <li class="flex items-start">
-                                        <i class="fas fa-heart text-gold mr-3 mt-1"></i>
-                                        <span>Đồng hành tận tâm cùng gia đình trong những khoảnh khắc khó khăn</span>
-                                    </li>
-                                    <li class="flex items-start">
-                                        <i class="fas fa-hands-helping text-gold mr-3 mt-1"></i>
-                                        <span>Cung cấp dịch vụ tang lễ chuyên nghiệp và trọn vẹn</span>
-                                    </li>
-                                    <li class="flex items-start">
-                                        <i class="fas fa-leaf text-gold mr-3 mt-1"></i>
-                                        <span>Tạo nên nơi an nghỉ yên bình cho người đã khuất</span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Why Choose Us Section -->
-        <section class="py-16 bg-gray-50">
-            <div class="container mx-auto px-4">
-                <div class="text-center mb-12" data-aos="fade-up">
-                    <h2 class="text-3xl md:text-4xl font-bold mb-4 text-black">
-                        TẠI SAO CHỌN <span class="text-gold">TANG LỄ YÊN BÌNH</span>
-                    </h2>
-                    <div class="w-24 h-1 bg-gold mx-auto"></div>
-                </div>
-                
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                    <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow" data-aos="fade-up" data-aos-delay="100">
-                        <div class="text-center">
-                            <div class="bg-gold/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <i class="fas fa-crown text-gold text-2xl"></i>
-                            </div>
-                            <h3 class="text-xl font-bold mb-4 text-black">Nghĩa Trang Lớn Nhất Tỉnh</h3>
-                            <p class="text-gray-600 leading-relaxed">
-                                Sở hữu nghĩa trang tư nhân lớn nhất tỉnh Ninh Thuận với hạ tầng hiện đại, không gian yên tĩnh và trang nghiêm.
-                            </p>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow" data-aos="fade-up" data-aos-delay="200">
-                        <div class="text-center">
-                            <div class="bg-gold/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <i class="fas fa-clock text-gold text-2xl"></i>
-                            </div>
-                            <h3 class="text-xl font-bold mb-4 text-black">Phục Vụ 24/7</h3>
-                            <p class="text-gray-600 leading-relaxed">
-                                Đội ngũ luôn túc trực 24/7, sẵn sàng hỗ trợ và có mặt tại địa điểm trong thời gian sớm nhất khi cần thiết.
-                            </p>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow" data-aos="fade-up" data-aos-delay="300">
-                        <div class="text-center">
-                            <div class="bg-gold/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <i class="fas fa-users text-gold text-2xl"></i>
-                            </div>
-                            <h3 class="text-xl font-bold mb-4 text-black">Đội Ngũ Chuyên Nghiệp</h3>
-                            <p class="text-gray-600 leading-relaxed">
-                                Nhiều năm kinh nghiệm, am hiểu nghi lễ truyền thống, được đào tạo bài bản về tâm lý khách hàng.
-                            </p>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow" data-aos="fade-up" data-aos-delay="400">
-                        <div class="text-center">
-                            <div class="bg-gold/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <i class="fas fa-cogs text-gold text-2xl"></i>
-                            </div>
-                            <h3 class="text-xl font-bold mb-4 text-black">Trang Thiết Bị Hiện Đại</h3>
-                            <p class="text-gray-600 leading-relaxed">
-                                Quy trình chuẩn hóa, trang thiết bị hiện đại, xe chuyên dụng cao cấp đảm bảo an toàn tuyệt đối.
-                            </p>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow" data-aos="fade-up" data-aos-delay="500">
-                        <div class="text-center">
-                            <div class="bg-gold/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <i class="fas fa-dollar-sign text-gold text-2xl"></i>
-                            </div>
-                            <h3 class="text-xl font-bold mb-4 text-black">Minh Bạch Chi Phí</h3>
-                            <p class="text-gray-600 leading-relaxed">
-                                Báo giá chi tiết, minh bạch. Cam kết không phát sinh chi phí ngoài hợp đồng đã ký kết.
-                            </p>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow" data-aos="fade-up" data-aos-delay="600">
-                        <div class="text-center">
-                            <div class="bg-gold/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <i class="fas fa-handshake text-gold text-2xl"></i>
-                            </div>
-                            <h3 class="text-xl font-bold mb-4 text-black">Đồng Hành Tận Tâm</h3>
-                            <p class="text-gray-600 leading-relaxed">
-                                Thấu hiểu nỗi đau, sẵn sàng lắng nghe và hỗ trợ tâm lý, tinh thần cho gia đình khách hàng.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Services Section -->
-        <section id="services" class="py-16 bg-white">
-            <div class="container mx-auto px-4">
-                <div class="text-center mb-12" data-aos="fade-up">
-                    <h2 class="text-3xl md:text-4xl font-bold mb-4 text-black">
-                        DỊCH VỤ <span class="text-gold">TOÀN DIỆN</span>
-                    </h2>
-                    <div class="w-24 h-1 bg-gold mx-auto mb-6"></div>
-                    <p class="text-gray-600 text-lg max-w-2xl mx-auto">
-                        Chúng tôi cung cấp đầy đủ các dịch vụ tang lễ từ cơ bản đến cao cấp, đáp ứng mọi nhu cầu của gia đình
-                    </p>
-                </div>
-                
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                    <div class="bg-gradient-to-br from-gray-50 to-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all border border-gray-100" data-aos="fade-up" data-aos-delay="100">
-                        <div class="text-center">
-                            <div class="bg-gold/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <i class="fas fa-scroll text-gold text-2xl"></i>
-                            </div>
-                            <h3 class="text-xl font-bold mb-4 text-black">Thủ Tục Pháp Lý</h3>
-                            <ul class="text-gray-600 text-left space-y-2">
-                                <li class="flex items-center"><i class="fas fa-check text-gold mr-2"></i>Giấy chứng tử</li>
-                                <li class="flex items-center"><i class="fas fa-check text-gold mr-2"></i>Thủ tục hỏa táng</li>
-                                <li class="flex items-center"><i class="fas fa-check text-gold mr-2"></i>Giấy phép chôn cất</li>
-                                <li class="flex items-center"><i class="fas fa-check text-gold mr-2"></i>Tư vấn pháp lý miễn phí</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-gradient-to-br from-gray-50 to-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all border border-gray-100" data-aos="fade-up" data-aos-delay="200">
-                        <div class="text-center">
-                            <div class="bg-gold/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <i class="fas fa-palette text-gold text-2xl"></i>
-                            </div>
-                            <h3 class="text-xl font-bold mb-4 text-black">Trang Trí & Nghi Lễ</h3>
-                            <ul class="text-gray-600 text-left space-y-2">
-                                <li class="flex items-center"><i class="fas fa-check text-gold mr-2"></i>Thiết kế linh đường</li>
-                                <li class="flex items-center"><i class="fas fa-check text-gold mr-2"></i>Trang trí hoa tươi cao cấp</li>
-                                <li class="flex items-center"><i class="fas fa-check text-gold mr-2"></i>Âm thanh ánh sáng</li>
-                                <li class="flex items-center"><i class="fas fa-check text-gold mr-2"></i>Chụp ảnh quay phim</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-gradient-to-br from-gray-50 to-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all border border-gray-100" data-aos="fade-up" data-aos-delay="300">
-                        <div class="text-center">
-                            <div class="bg-gold/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <i class="fas fa-car text-gold text-2xl"></i>
-                            </div>
-                            <h3 class="text-xl font-bold mb-4 text-black">Vận Chuyển Chuyên Dụng</h3>
-                            <ul class="text-gray-600 text-left space-y-2">
-                                <li class="flex items-center"><i class="fas fa-check text-gold mr-2"></i>Xe tang cao cấp</li>
-                                <li class="flex items-center"><i class="fas fa-check text-gold mr-2"></i>Xe rồng truyền thống</li>
-                                <li class="flex items-center"><i class="fas fa-check text-gold mr-2"></i>Xe chở gia đình</li>
-                                <li class="flex items-center"><i class="fas fa-check text-gold mr-2"></i>Lái xe chuyên nghiệp</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-gradient-to-br from-gray-50 to-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all border border-gray-100" data-aos="fade-up" data-aos-delay="400">
-                        <div class="text-center">
-                            <div class="bg-gold/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <i class="fas fa-music text-gold text-2xl"></i>
-                            </div>
-                            <h3 class="text-xl font-bold mb-4 text-black">Âm Nhạc & Nghi Thức</h3>
-                            <ul class="text-gray-600 text-left space-y-2">
-                                <li class="flex items-center"><i class="fas fa-check text-gold mr-2"></i>Ban nhạc lễ truyền thống</li>
-                                <li class="flex items-center"><i class="fas fa-check text-gold mr-2"></i>Đội kèn tây hiện đại</li>
-                                <li class="flex items-center"><i class="fas fa-check text-gold mr-2"></i>Đội khiên quan trang trọng</li>
-                                <li class="flex items-center"><i class="fas fa-check text-gold mr-2"></i>Nghi thức theo tôn giáo</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-gradient-to-br from-gray-50 to-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all border border-gray-100" data-aos="fade-up" data-aos-delay="500">
-                        <div class="text-center">
-                            <div class="bg-gold/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <i class="fas fa-seedling text-gold text-2xl"></i>
-                            </div>
-                            <h3 class="text-xl font-bold mb-4 text-black">Dịch Vũ Hoa & Trang Trí</h3>
-                            <ul class="text-gray-600 text-left space-y-2">
-                                <li class="flex items-center"><i class="fas fa-check text-gold mr-2"></i>Hoa tươi cao cấp</li>
-                                <li class="flex items-center"><i class="fas fa-check text-gold mr-2"></i>Thiết kế theo yêu cầu</li>
-                                <li class="flex items-center"><i class="fas fa-check text-gold mr-2"></i>Vòng hoa, lẵng hoa</li>
-                                <li class="flex items-center"><i class="fas fa-check text-gold mr-2"></i>Bảo quản hoa tươi lâu</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-gradient-to-br from-gray-50 to-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all border border-gray-100" data-aos="fade-up" data-aos-delay="600">
-                        <div class="text-center">
-                            <div class="bg-gold/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <i class="fas fa-fire text-gold text-2xl"></i>
-                            </div>
-                            <h3 class="text-xl font-bold mb-4 text-black">Dịch Vụ Đặc Biệt</h3>
-                            <ul class="text-gray-600 text-left space-y-2">
-                                <li class="flex items-center"><i class="fas fa-check text-gold mr-2"></i>Tang lễ - An táng</li>
-                                <li class="flex items-center"><i class="fas fa-check text-gold mr-2"></i>Tang lễ - Hỏa táng</li>
-                                <li class="flex items-center"><i class="fas fa-check text-gold mr-2"></i>Dịch vụ cải táng</li>
-                                <li class="flex items-center"><i class="fas fa-check text-gold mr-2"></i>Tư vấn phong thủy</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="text-center mt-12" data-aos="fade-up">
-                    <a href="tel:0785877755" class="btn-primary inline-flex items-center px-8 py-4 text-lg touch-target">
-                        <i class="fas fa-phone mr-3"></i>
-                        Tư vấn miễn phí: 0785877755
+        <section class="bg-black text-center section-padding">
+            <div class="container-safe">
+                <h2 class="text-hero font-bold text-gold mb-4">DỊCH VỤ TANG LỄ YÊN BÌNH</h2>
+                <p class="text-xl mb-6 text-high-contrast">"Trọn Vẹn Nghĩa Tình - Đồng Hành Cùng Gia Đình"</p>
+                <p class="text-lg mb-8 text-gray-300">Phục vụ 24/7 tại Phan Rang - Tháp Chàm, Ninh Thuận</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <a href="tel:0785877755" class="bg-gold text-black px-8 py-4 rounded-lg text-lg font-bold hover-bg-gold focus-visible touch-target">
+                        <i class="fas fa-phone mr-2"></i>Gọi ngay: 0785877755
+                    </a>
+                    <a href="sms:0785877755" class="border border-gold text-gold px-8 py-4 rounded-lg text-lg font-bold hover-bg-gold hover:text-black focus-visible touch-target">
+                        <i class="fas fa-comments mr-2"></i>Nhắn tin
                     </a>
                 </div>
             </div>
         </section>
 
-        <!-- Gallery Section -->
-        <section id="gallery" class="py-16 bg-gray-50">
-            <div class="container mx-auto px-4">
-                <div class="text-center mb-12" data-aos="fade-up">
-                    <h2 class="text-3xl md:text-4xl font-bold mb-4 text-black">
-                        HÌNH ẢNH <span class="text-gold">DỊCH VỤ</span>
-                    </h2>
-                    <div class="w-24 h-1 bg-gold mx-auto mb-6"></div>
-                    <p class="text-gray-600 text-lg max-w-2xl mx-auto">
-                        Những hình ảnh thực tế về dịch vụ tang lễ chuyên nghiệp của chúng tôi
-                    </p>
+        <!-- Giới thiệu Section -->
+        <section id="gioi-thieu" class="bg-gray-800 section-padding">
+            <div class="container-safe">
+                <h2 class="text-section font-bold text-gold mb-8 text-center">GIỚI THIỆU VỀ TANG LỄ YÊN BÌNH</h2>
+                
+                <!-- Team Image -->
+                <div class="flex justify-center mb-8">
+                    <img src="https://page1.genspark.site/v1/base64_upload/ec939ed68c137035688e12c76af26b57" 
+                         alt="Đội ngũ Tang Lễ Yên Bình" 
+                         class="max-w-full h-auto rounded-lg shadow-lg">
                 </div>
                 
-                <!-- Desktop Gallery Grid -->
-                <div class="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-                    <div class="gallery-item" data-aos="zoom-in" data-aos-delay="100">
-                        <img data-src="https://page1.genspark.site/v1/base64_upload/b44ce957bebda3ecb173451a4a7990dd" alt="Quan tài gỗ cao cấp với hoa trang trí trang trọng" class="lazy-load">
-                        <div class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-30 transition-all flex items-center justify-center">
-                            <p class="text-white font-semibold opacity-0 hover:opacity-100 transition-opacity">Quan tài gỗ cao cấp</p>
-                        </div>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-xl font-bold text-gold mb-4">Lịch sử thành lập</h3>
+                        <p class="text-gray-300 mb-4 leading-relaxed">
+                            Tang Lễ Yên Bình được thành lập với sứ mệnh "Đồng hành cùng gia đình trong giây phút khó khăn". 
+                            Với nhiều năm kinh nghiệm, chúng tôi trở thành đơn vị hàng đầu tại Phan Rang-Tháp Chàm.
+                        </p>
+                        <h3 class="text-xl font-bold text-gold mb-4">Sứ mệnh</h3>
+                        <p class="text-gray-300 leading-relaxed">
+                            Mang đến những dịch vụ tang lễ trang trọng, chu đáo và đầy nghĩa tình. Chúng tôi hiểu rằng 
+                            đây là khoảnh khắc thiêng liêng, cần sự tôn kính và chuyên nghiệp tuyệt đối.
+                        </p>
                     </div>
-                    
-                    <div class="gallery-item" data-aos="zoom-in" data-aos-delay="200">
-                        <img data-src="https://page1.genspark.site/v1/base64_upload/5044b3f177f5ebf9902dafa34e52c6e0" alt="Linh đường trang trọng với trang trí hoa trắng" class="lazy-load">
-                        <div class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-30 transition-all flex items-center justify-center">
-                            <p class="text-white font-semibold opacity-0 hover:opacity-100 transition-opacity">Linh đường trang trọng</p>
-                        </div>
-                    </div>
-                    
-                    <div class="gallery-item" data-aos="zoom-in" data-aos-delay="300">
-                        <img data-src="https://page1.genspark.site/v1/base64_upload/fe6d242fd536dcb2ab2cc1a9bbadc599" alt="Tang lễ trong nhà với không gian ấm cúng" class="lazy-load">
-                        <div class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-30 transition-all flex items-center justify-center">
-                            <p class="text-white font-semibold opacity-0 hover:opacity-100 transition-opacity">Tang lễ trong nhà</p>
-                        </div>
-                    </div>
-                    
-                    <div class="gallery-item" data-aos="zoom-in" data-aos-delay="400">
-                        <img data-src="https://page1.genspark.site/v1/base64_upload/f8e8298b6c0465fc23ac20d0c992702f" alt="Nhân viên tư vấn chuyên nghiệp hỗ trợ gia đình" class="lazy-load">
-                        <div class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-30 transition-all flex items-center justify-center">
-                            <p class="text-white font-semibold opacity-0 hover:opacity-100 transition-opacity">Tư vấn chuyên nghiệp</p>
-                        </div>
-                    </div>
-                    
-                    <div class="gallery-item" data-aos="zoom-in" data-aos-delay="500">
-                        <img data-src="https://page1.genspark.site/v1/base64_upload/d80ed323e22f7e32af739184e47582ec" alt="Lễ an táng tại nghĩa trang với nghi thức truyền thống" class="lazy-load">
-                        <div class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-30 transition-all flex items-center justify-center">
-                            <p class="text-white font-semibold opacity-0 hover:opacity-100 transition-opacity">Lễ an táng</p>
-                        </div>
-                    </div>
-                    
-                    <div class="gallery-item" data-aos="zoom-in" data-aos-delay="600">
-                        <img data-src="https://page1.genspark.site/v1/base64_upload/13e8ed3863f630cd0d6dfce1eb2c11f6" alt="Đội khiêng quan chuyên nghiệp trong đồng phục" class="lazy-load">
-                        <div class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-30 transition-all flex items-center justify-center">
-                            <p class="text-white font-semibold opacity-0 hover:opacity-100 transition-opacity">Đội ngũ chuyên nghiệp</p>
-                        </div>
-                    </div>
-                    
-                    <div class="gallery-item" data-aos="zoom-in" data-aos-delay="700">
-                        <img data-src="https://page1.genspark.site/v1/base64_upload/7117476d98aa6ab816e0ad6ab9dc16bd" alt="Linh đường tại nhà với bàn thờ trang nghiêm" class="lazy-load">
-                        <div class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-30 transition-all flex items-center justify-center">
-                            <p class="text-white font-semibold opacity-0 hover:opacity-100 transition-opacity">Linh đường tại nhà</p>
-                        </div>
-                    </div>
-                    
-                    <div class="gallery-item" data-aos="zoom-in" data-aos-delay="800">
-                        <img data-src="https://page1.genspark.site/v1/base64_upload/194f79f7a5ba07877e1b856278a5aefe" alt="Không gian trang trọng với trang trí hoa cao cấp" class="lazy-load">
-                        <div class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-30 transition-all flex items-center justify-center">
-                            <p class="text-white font-semibold opacity-0 hover:opacity-100 transition-opacity">Không gian trang trọng</p>
-                        </div>
-                    </div>
-                    
-                    <div class="gallery-item" data-aos="zoom-in" data-aos-delay="900">
-                        <img data-src="https://page1.genspark.site/v1/base64_upload/ca98d21bd1a2b410009ac518bd874eb0" alt="Trang trí hoa cao cấp với thiết kế tinh tế" class="lazy-load">
-                        <div class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-30 transition-all flex items-center justify-center">
-                            <p class="text-white font-semibold opacity-0 hover:opacity-100 transition-opacity">Trang trí hoa cao cấp</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Mobile Gallery Swiper -->
-                <div class="md:hidden" data-aos="fade-up">
-                    <div class="swiper gallery-swiper">
-                        <div class="swiper-wrapper">
-                            <div class="swiper-slide">
-                                <div class="gallery-item">
-                                    <img data-src="https://page1.genspark.site/v1/base64_upload/b44ce957bebda3ecb173451a4a7990dd" alt="Quan tài gỗ cao cấp với hoa trang trí trang trọng" class="lazy-load">
-                                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
-                                        <p class="text-white font-semibold">Quan tài gỗ cao cấp</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="gallery-item">
-                                    <img data-src="https://page1.genspark.site/v1/base64_upload/5044b3f177f5ebf9902dafa34e52c6e0" alt="Linh đường trang trọng với trang trí hoa trắng" class="lazy-load">
-                                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
-                                        <p class="text-white font-semibold">Linh đường trang trọng</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="gallery-item">
-                                    <img data-src="https://page1.genspark.site/v1/base64_upload/fe6d242fd536dcb2ab2cc1a9bbadc599" alt="Tang lễ trong nhà với không gian ấm cúng" class="lazy-load">
-                                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
-                                        <p class="text-white font-semibold">Tang lễ trong nhà</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="gallery-item">
-                                    <img data-src="https://page1.genspark.site/v1/base64_upload/f8e8298b6c0465fc23ac20d0c992702f" alt="Nhân viên tư vấn chuyên nghiệp hỗ trợ gia đình" class="lazy-load">
-                                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
-                                        <p class="text-white font-semibold">Tư vấn chuyên nghiệp</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="gallery-item">
-                                    <img data-src="https://page1.genspark.site/v1/base64_upload/d80ed323e22f7e32af739184e47582ec" alt="Lễ an táng tại nghĩa trang với nghi thức truyền thống" class="lazy-load">
-                                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
-                                        <p class="text-white font-semibold">Lễ an táng</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="gallery-item">
-                                    <img data-src="https://page1.genspark.site/v1/base64_upload/13e8ed3863f630cd0d6dfce1eb2c11f6" alt="Đội khiêng quan chuyên nghiệp trong đồng phục" class="lazy-load">
-                                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
-                                        <p class="text-white font-semibold">Đội ngũ chuyên nghiệp</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="gallery-item">
-                                    <img data-src="https://page1.genspark.site/v1/base64_upload/7117476d98aa6ab816e0ad6ab9dc16bd" alt="Linh đường tại nhà với bàn thờ trang nghiêm" class="lazy-load">
-                                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
-                                        <p class="text-white font-semibold">Linh đường tại nhà</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="gallery-item">
-                                    <img data-src="https://page1.genspark.site/v1/base64_upload/194f79f7a5ba07877e1b856278a5aefe" alt="Không gian trang trọng với trang trí hoa cao cấp" class="lazy-load">
-                                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
-                                        <p class="text-white font-semibold">Không gian trang trọng</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="gallery-item">
-                                    <img data-src="https://page1.genspark.site/v1/base64_upload/ca98d21bd1a2b410009ac518bd874eb0" alt="Trang trí hoa cao cấp với thiết kế tinh tế" class="lazy-load">
-                                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
-                                        <p class="text-white font-semibold">Trang trí hoa cao cấp</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="swiper-pagination"></div>
-                        <div class="swiper-button-next"></div>
-                        <div class="swiper-button-prev"></div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gold mb-4">Tầm nhìn</h3>
+                        <p class="text-gray-300 mb-4 leading-relaxed">
+                            Trở thành đơn vị dẫn đầu miền Nam về dịch vụ tang lễ, với tiêu chuẩn chất lượng quốc tế 
+                            và giá trị nhân văn sâu sắc.
+                        </p>
+                        <h3 class="text-xl font-bold text-gold mb-4">Thành tựu</h3>
+                        <ul class="text-gray-300 space-y-2">
+                            <li>• Sở hữu nghĩa trang tư nhân lớn nhất tỉnh Ninh Thuận</li>
+                            <li>• Phục vụ hàng nghìn gia đình với tỷ lệ hài lòng 95%+</li>
+                            <li>• Đánh giá 5.0/5 sao trên Google Maps</li>
+                            <li>• Đội ngũ chuyên nghiệp, tận tâm 24/7</li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Contact Section -->
-        <section id="contact" class="py-16 bg-black text-white">
-            <div class="container mx-auto px-4">
-                <div class="text-center mb-12" data-aos="fade-up">
-                    <h2 class="text-3xl md:text-4xl font-bold mb-4">
-                        LIÊN HỆ <span class="text-gold">TANG LỄ YÊN BÌNH</span>
-                    </h2>
-                    <div class="w-24 h-1 bg-gold mx-auto mb-6"></div>
-                    <p class="text-gray-300 text-lg max-w-2xl mx-auto">
-                        Chúng tôi luôn sẵn sàng hỗ trợ bạn 24/7 trong những giây phút khó khăn
-                    </p>
-                </div>
-                
-                <div class="max-w-6xl mx-auto">
-                    <div class="grid lg:grid-cols-3 gap-12">
-                        <!-- Contact Info -->
-                        <div class="lg:col-span-1 space-y-8" data-aos="fade-right">
-                            <div class="text-center lg:text-left">
-                                <h3 class="text-2xl font-bold mb-6 text-gold">Thông Tin Liên Hệ</h3>
-                                
-                                <div class="space-y-6">
-                                    <div class="flex items-start space-x-4">
-                                        <div class="bg-gold/20 p-3 rounded-full">
-                                            <i class="fas fa-phone text-gold"></i>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-semibold mb-1">Hotline 24/7</h4>
-                                            <a href="tel:0785877755" class="text-gold hover:text-yellow-300 text-lg font-bold">0785877755</a>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="flex items-start space-x-4">
-                                        <div class="bg-gold/20 p-3 rounded-full">
-                                            <i class="fas fa-envelope text-gold"></i>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-semibold mb-1">Email</h4>
-                                            <a href="mailto:tangleyenbinh@gmail.com" class="text-gold hover:text-yellow-300">tangleyenbinh@gmail.com</a>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="flex items-start space-x-4">
-                                        <div class="bg-gold/20 p-3 rounded-full">
-                                            <i class="fas fa-globe text-gold"></i>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-semibold mb-1">Website</h4>
-                                            <a href="https://tangleyenbinh.com" class="text-gold hover:text-yellow-300">tangleyenbinh.com</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Branch Addresses -->
-                        <div class="lg:col-span-2" data-aos="fade-left">
-                            <h3 class="text-2xl font-bold mb-6 text-gold text-center lg:text-left">Hệ Thống Chi Nhánh</h3>
-                            
-                            <div class="grid md:grid-cols-1 gap-6">
-                                <div class="bg-gray-900 p-6 rounded-xl border border-gray-700">
-                                    <h4 class="text-xl font-bold text-gold mb-3">
-                                        <i class="fas fa-building mr-2"></i>Văn Phòng Chính
-                                    </h4>
-                                    <p class="text-gray-300 mb-4">31B Trần Phú, Phường Phủ Hà, Thành phố Phan Rang-Tháp Chàm, Tỉnh Ninh Thuận</p>
-                                    <a href="https://maps.app.goo.gl/6LYANJg6FXxBMVhM6" target="_blank" class="text-gold hover:text-yellow-300 inline-flex items-center touch-target">
-                                        <i class="fas fa-map-marker-alt mr-2"></i>Xem bản đồ
-                                    </a>
-                                </div>
-                                
-                                <div class="bg-gray-900 p-6 rounded-xl border border-gray-700">
-                                    <h4 class="text-xl font-bold text-gold mb-3">
-                                        <i class="fas fa-store mr-2"></i>Chi Nhánh 1
-                                    </h4>
-                                    <p class="text-gray-300 mb-4">776 đường 21/8, Phường Đô Vinh, Thành phố Phan Rang-Tháp Chàm, Tỉnh Ninh Thuận</p>
-                                    <a href="https://maps.app.goo.gl/6LYANJg6FXxBMVhM6" target="_blank" class="text-gold hover:text-yellow-300 inline-flex items-center touch-target">
-                                        <i class="fas fa-map-marker-alt mr-2"></i>Xem bản đồ
-                                    </a>
-                                </div>
-                                
-                                <div class="bg-gray-900 p-6 rounded-xl border border-gray-700">
-                                    <h4 class="text-xl font-bold text-gold mb-3">
-                                        <i class="fas fa-store mr-2"></i>Chi Nhánh 2
-                                    </h4>
-                                    <p class="text-gray-300 mb-4">213 đường Yên Ninh, Phường Mỹ Hài, Thành phố Phan Rang-Tháp Chàm, Tỉnh Ninh Thuận</p>
-                                    <a href="https://maps.app.goo.gl/6LYANJg6FXxBMVhM6" target="_blank" class="text-gold hover:text-yellow-300 inline-flex items-center touch-target">
-                                        <i class="fas fa-map-marker-alt mr-2"></i>Xem bản đồ
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+        <!-- Tại sao chọn chúng tôi -->
+        <section class="bg-gray-900 section-padding">
+            <div class="container-safe">
+                <h2 class="text-section font-bold text-gold mb-8 text-center">TẠI SAO CHỌN TANG LỄ YÊN BÌNH</h2>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-gray-800 p-6 rounded-lg">
+                        <div class="text-gold text-3xl mb-4"><i class="fas fa-mountain"></i></div>
+                        <h3 class="text-lg font-bold text-gold mb-3">Nghĩa Trang Lớn Nhất Tỉnh</h3>
+                        <p class="text-gray-300 text-sm leading-relaxed">
+                            Sở hữu nghĩa trang tư nhân lớn nhất Ninh Thuận với hạ tầng hiện đại, 
+                            không gian yên tĩnh và thuận tiện thăm viếng.
+                        </p>
                     </div>
                     
-                    <!-- CTA Buttons -->
-                    <div class="text-center mt-12" data-aos="fade-up">
-                        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                            <a href="tel:0785877755" class="btn-primary inline-flex items-center px-8 py-4 text-lg touch-target">
-                                <i class="fas fa-phone mr-3"></i>
-                                Gọi ngay: 0785877755
-                            </a>
-                            <a href="sms:0785877755" class="bg-transparent border-2 border-gold text-gold hover:bg-gold hover:text-black px-8 py-4 rounded-lg transition-all font-semibold touch-target">
-                                <i class="fas fa-comment mr-3"></i>
-                                Nhắn tin tư vấn
-                            </a>
-                        </div>
-                        <p class="text-gray-400 mt-4 text-sm">
-                            Chúng tôi cam kết có mặt trong 30 phút sau khi nhận được cuộc gọi
+                    <div class="bg-gray-800 p-6 rounded-lg">
+                        <div class="text-gold text-3xl mb-4"><i class="fas fa-clock"></i></div>
+                        <h3 class="text-lg font-bold text-gold mb-3">Phục Vụ 24/7</h3>
+                        <p class="text-gray-300 text-sm leading-relaxed">
+                            Đội ngũ luôn túc trực, sẵn sàng hỗ trợ mọi lúc. 
+                            Cam kết có mặt trong thời gian sớm nhất khi gia đình cần.
+                        </p>
+                    </div>
+                    
+                    <div class="bg-gray-800 p-6 rounded-lg">
+                        <div class="text-gold text-3xl mb-4"><i class="fas fa-users"></i></div>
+                        <h3 class="text-lg font-bold text-gold mb-3">Đội Ngũ Chuyên Nghiệp</h3>
+                        <p class="text-gray-300 text-sm leading-relaxed">
+                            Nhiều năm kinh nghiệm, am hiểu nghi lễ truyền thống, 
+                            được đào tạo bài bản về tâm lý khách hàng.
+                        </p>
+                    </div>
+                    
+                    <div class="bg-gray-800 p-6 rounded-lg">
+                        <div class="text-gold text-3xl mb-4"><i class="fas fa-cogs"></i></div>
+                        <h3 class="text-lg font-bold text-gold mb-3">Trang Thiết Bị Hiện Đại</h3>
+                        <p class="text-gray-300 text-sm leading-relaxed">
+                            Quy trình chuẩn hóa, thiết bị hiện đại, xe chuyên dụng cao cấp, 
+                            đảm bảo vệ sinh và an toàn tuyệt đối.
+                        </p>
+                    </div>
+                    
+                    <div class="bg-gray-800 p-6 rounded-lg">
+                        <div class="text-gold text-3xl mb-4"><i class="fas fa-handshake"></i></div>
+                        <h3 class="text-lg font-bold text-gold mb-3">Chi Phí Minh Bạch</h3>
+                        <p class="text-gray-300 text-sm leading-relaxed">
+                            Báo giá chi tiết từ đầu, cam kết không phát sinh. 
+                            Nhiều gói dịch vụ phù hợp mọi điều kiện.
+                        </p>
+                    </div>
+                    
+                    <div class="bg-gray-800 p-6 rounded-lg">
+                        <div class="text-gold text-3xl mb-4"><i class="fas fa-heart"></i></div>
+                        <h3 class="text-lg font-bold text-gold mb-3">Đồng Hành Tận Tâm</h3>
+                        <p class="text-gray-300 text-sm leading-relaxed">
+                            Thấu hiểu nỗi đau, sẵn sàng lắng nghe, hỗ trợ tâm lý 
+                            và đồng hành từ đầu đến cuối.
                         </p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Commitment Section -->
-        <section class="py-16 bg-gradient-to-br from-gray-900 to-black text-white">
-            <div class="container mx-auto px-4">
-                <div class="text-center mb-12" data-aos="fade-up">
-                    <h2 class="text-3xl md:text-4xl font-bold mb-4">
-                        CAM KẾT <span class="text-gold">DỊCH VỤ</span>
-                    </h2>
-                    <div class="w-24 h-1 bg-gold mx-auto"></div>
+        <!-- Dịch vụ Section -->
+        <section id="dich-vu" class="bg-gray-800 section-padding">
+            <div class="container-safe">
+                <h2 class="text-section font-bold text-gold mb-8 text-center">DỊCH VỤ CHUYÊN NGHIỆP</h2>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-gray-900 p-6 rounded-lg text-center">
+                        <div class="text-gold text-4xl mb-4"><i class="fas fa-church"></i></div>
+                        <h3 class="text-lg font-bold text-gold mb-3">Tang Lễ - An Táng</h3>
+                        <p class="text-gray-300 text-sm">8 gói dịch vụ từ cơ bản đến cao cấp, phù hợp mọi điều kiện</p>
+                    </div>
+                    
+                    <div class="bg-gray-900 p-6 rounded-lg text-center">
+                        <div class="text-gold text-4xl mb-4"><i class="fas fa-fire"></i></div>
+                        <h3 class="text-lg font-bold text-gold mb-3">Tang Lễ - Hỏa Táng</h3>
+                        <p class="text-gray-300 text-sm">4 gói dịch vụ hỏa táng văn minh, hiện đại</p>
+                    </div>
+                    
+                    <div class="bg-gray-900 p-6 rounded-lg text-center">
+                        <div class="text-gold text-4xl mb-4"><i class="fas fa-exchange-alt"></i></div>
+                        <h3 class="text-lg font-bold text-gold mb-3">Dịch Vụ Cải Táng</h3>
+                        <p class="text-gray-300 text-sm">4 gói cải táng chuyên nghiệp với quy trình an toàn</p>
+                    </div>
+                    
+                    <div class="bg-gray-900 p-6 rounded-lg text-center">
+                        <div class="text-gold text-4xl mb-4"><i class="fas fa-hands-helping"></i></div>
+                        <h3 class="text-lg font-bold text-gold mb-3">Dịch Vụ Toàn Diện</h3>
+                        <p class="text-gray-300 text-sm">Thủ tục, vận chuyển, trang trí, âm nhạc, hoa...</p>
+                    </div>
                 </div>
                 
-                <div class="max-w-4xl mx-auto">
-                    <div class="grid md:grid-cols-2 gap-8">
-                        <div class="space-y-6" data-aos="fade-right">
-                            <div class="flex items-start space-x-4">
-                                <div class="bg-gold/20 p-3 rounded-full flex-shrink-0">
-                                    <i class="fas fa-heart text-gold"></i>
-                                </div>
-                                <div>
-                                    <h3 class="text-xl font-bold mb-2 text-gold">Tận Tâm & Thấu Hiểu</h3>
-                                    <p class="text-gray-300">Đội ngũ luôn đặt mình vào vị trí gia đình, thấu hiểu nỗi đau và sẵn sàng đồng hành bằng sự tận tụy nhất.</p>
-                                </div>
-                            </div>
-                            
-                            <div class="flex items-start space-x-4">
-                                <div class="bg-gold/20 p-3 rounded-full flex-shrink-0">
-                                    <i class="fas fa-star text-gold"></i>
-                                </div>
-                                <div>
-                                    <h3 class="text-xl font-bold mb-2 text-gold">Chất Lượng Dịch Vụ</h3>
-                                    <p class="text-gray-300">Mọi nghi lễ được thực hiện trang nghiêm với quy trình chuẩn hóa, đảm bảo chất lượng trong từng chi tiết.</p>
-                                </div>
-                            </div>
-                            
-                            <div class="flex items-start space-x-4">
-                                <div class="bg-gold/20 p-3 rounded-full flex-shrink-0">
-                                    <i class="fas fa-eye text-gold"></i>
-                                </div>
-                                <div>
-                                    <h3 class="text-xl font-bold mb-2 text-gold">Minh Bạch Chi Phí</h3>
-                                    <p class="text-gray-300">Công khai giá dịch vụ, cam kết không phát sinh chi phí ngoài hợp đồng đã ký kết.</p>
-                                </div>
-                            </div>
+                <div class="mt-12 text-center">
+                    <h3 class="text-xl font-bold text-gold mb-4">GÓI DỊCH VỤ PHỔ BIẾN</h3>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="bg-gray-900 p-6 rounded-lg border border-gold">
+                            <h4 class="text-lg font-bold text-gold mb-2">Gói Phúc Bảo</h4>
+                            <p class="text-2xl font-bold text-white mb-2">39 triệu VNĐ</p>
+                            <p class="text-gray-300 text-sm">Quan tài MDF, 8 người khiên quan, 3 khung rạp</p>
                         </div>
                         
-                        <div class="space-y-6" data-aos="fade-left">
-                            <div class="flex items-start space-x-4">
-                                <div class="bg-gold/20 p-3 rounded-full flex-shrink-0">
-                                    <i class="fas fa-clock text-gold"></i>
-                                </div>
-                                <div>
-                                    <h3 class="text-xl font-bold mb-2 text-gold">Sẵn Sàng Hỗ Trợ</h3>
-                                    <p class="text-gray-300">Đội ngũ túc trực 24/7, cam kết có mặt trong thời gian sớm nhất để đồng hành cùng gia đình.</p>
-                                </div>
+                        <div class="bg-gold p-6 rounded-lg text-black">
+                            <h4 class="text-lg font-bold mb-2">Gói Ngọc Phúc</h4>
+                            <p class="text-2xl font-bold mb-2">110 triệu VNĐ</p>
+                            <p class="text-sm">Quan tài gỗ Trai, 16 người, 6 khung rạp - PHỔ BIẾN</p>
+                        </div>
+                        
+                        <div class="bg-gray-900 p-6 rounded-lg border border-gold">
+                            <h4 class="text-lg font-bold text-gold mb-2">Gói Phúc An</h4>
+                            <p class="text-2xl font-bold text-white mb-2">115 triệu VNĐ</p>
+                            <p class="text-gray-300 text-sm">Quan tài gỗ Gõ đỏ, cao cấp nhất</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gallery Section -->
+        <section id="gallery" class="bg-gray-900 section-padding">
+            <div class="container-safe">
+                <h2 class="text-section font-bold text-gold mb-8 text-center">HÌNH ẢNH DỊCH VỤ</h2>
+                <div class="gallery-grid">
+                    <div class="gallery-item">
+                        <img src="https://page1.genspark.site/v1/base64_upload/b44ce957bebda3ecb173451a4a7990dd" 
+                             alt="Quan tài gỗ cao cấp với hoa tươi" 
+                             loading="lazy">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://page1.genspark.site/v1/base64_upload/5044b3f177f5ebf9902dafa34e52c6e0" 
+                             alt="Linh đường trang trọng với trang trí hoa" 
+                             loading="lazy">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://page1.genspark.site/v1/base64_upload/fe6d242fd536dcb2ab2cc1a9bbadc599" 
+                             alt="Tang lễ tổ chức tại nhà" 
+                             loading="lazy">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://page1.genspark.site/v1/base64_upload/f8e8298b6c0465fc23ac20d0c992702f" 
+                             alt="Nhân viên tư vấn chuyên nghiệp" 
+                             loading="lazy">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://page1.genspark.site/v1/base64_upload/d80ed323e22f7e32af739184e47582ec" 
+                             alt="Lễ an táng tại nghĩa trang" 
+                             loading="lazy">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://page1.genspark.site/v1/base64_upload/13e8ed3863f630cd0d6dfce1eb2c11f6" 
+                             alt="Đội khiêng quan chuyên nghiệp" 
+                             loading="lazy">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Liên hệ Section -->
+        <section id="lien-he" class="bg-gray-800 section-padding">
+            <div class="container-safe">
+                <h2 class="text-section font-bold text-gold mb-8 text-center">THÔNG TIN LIÊN HỆ</h2>
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-xl font-bold text-gold mb-4">Liên hệ nhanh</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center">
+                                <i class="fas fa-phone text-gold mr-3"></i>
+                                <a href="tel:0785877755" class="hover-gold focus-visible">Hotline 24/7: 0785877755</a>
                             </div>
-                            
-                            <div class="flex items-start space-x-4">
-                                <div class="bg-gold/20 p-3 rounded-full flex-shrink-0">
-                                    <i class="fas fa-building text-gold"></i>
-                                </div>
-                                <div>
-                                    <h3 class="text-xl font-bold mb-2 text-gold">Cơ Sở Vật Chất</h3>
-                                    <p class="text-gray-300">Trang thiết bị hiện đại, nghĩa trang lớn nhất tỉnh với hạ tầng hoàn thiện và yên tĩnh.</p>
-                                </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-envelope text-gold mr-3"></i>
+                                <a href="mailto:tangleyenbinh@gmail.com" class="hover-gold focus-visible">tangleyenbinh@gmail.com</a>
                             </div>
-                            
-                            <div class="flex items-start space-x-4">
-                                <div class="bg-gold/20 p-3 rounded-full flex-shrink-0">
-                                    <i class="fas fa-shield-alt text-gold"></i>
-                                </div>
-                                <div>
-                                    <h3 class="text-xl font-bold mb-2 text-gold">Chịu Trách Nhiệm</h3>
-                                    <p class="text-gray-300">Cam kết chịu trách nhiệm hoàn toàn, khắc phục ngay lập tức mọi sai sót trong quá trình thực hiện.</p>
-                                </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-globe text-gold mr-3"></i>
+                                <span>tangleyenbinh.com</span>
                             </div>
                         </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-bold text-gold mb-4">Hệ thống chi nhánh</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="font-bold text-white">Văn phòng chính</h4>
+                                <p class="text-gray-300 text-sm">31B Trần Phú, P. Phủ Hà, TP. Phan Rang-Tháp Chàm</p>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white">Chi nhánh 1</h4>
+                                <p class="text-gray-300 text-sm">776 đường 21/8, P. Đô Vinh, TP. Phan Rang-Tháp Chàm</p>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white">Chi nhánh 2</h4>
+                                <p class="text-gray-300 text-sm">213 đường Yên Ninh, P. Mỹ Hài, TP. Phan Rang-Tháp Chàm</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 text-center">
+                    <a href="https://maps.app.goo.gl/6LYANJg6FXxBMVhM6" 
+                       target="_blank" 
+                       class="inline-block bg-gold text-black px-6 py-3 rounded-lg font-bold hover-bg-gold focus-visible">
+                        <i class="fas fa-map-marker-alt mr-2"></i>Xem trên Google Maps
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cam kết Section -->
+        <section class="bg-gray-900 section-padding">
+            <div class="container-safe">
+                <h2 class="text-section font-bold text-gold mb-8 text-center">CAM KẾT DỊCH VỤ</h2>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-lg font-bold text-gold mb-4">Cam kết chất lượng</h3>
+                        <ul class="text-gray-300 space-y-2 text-sm">
+                            <li>• Phục vụ tận tâm, thấu hiểu nỗi đau gia đình</li>
+                            <li>• Nghi lễ trang nghiêm, chỉn chu từng chi tiết</li>
+                            <li>• Quy trình chuẩn hóa theo tiêu chuẩn quốc tế</li>
+                            <li>• Đội ngũ chuyên nghiệp, kinh nghiệm lâu năm</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-gold mb-4">Cam kết minh bạch</h3>
+                        <ul class="text-gray-300 space-y-2 text-sm">
+                            <li>• Báo giá chi tiết, rõ ràng từ đầu</li>
+                            <li>• Không phát sinh chi phí ngoài hợp đồng</li>
+                            <li>• Hỗ trợ 24/7, có mặt trong thời gian sớm nhất</li>
+                            <li>• Chịu trách nhiệm hoàn toàn về chất lượng</li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </section>
     </main>
 
+    <!-- Fixed Call Button - Z-index 998, never overlaps menu -->
+    <a href="tel:0785877755" 
+       class="call-button-fixed bg-gold text-black z-call-button hover-bg-gold focus-visible" 
+       aria-label="Gọi ngay">
+        <i class="fas fa-phone text-xl"></i>
+    </a>
+
     <!-- Footer -->
-    <footer class="bg-black text-white py-12 border-t border-gray-800">
-        <div class="container mx-auto px-4">
-            <div class="grid md:grid-cols-3 gap-8">
-                <div>
-                    <div class="flex items-center mb-4">
-                        <img src="https://page1.genspark.site/v1/base64_upload/ebe6f7de4d8a1b4044b6f3afea8635ba" alt="Tang Lễ Yên Bình Logo" class="h-10 w-10 mr-3">
-                        <div>
-                            <h3 class="text-xl font-bold text-gold">TANG LỄ YÊN BÌNH</h3>
-                            <p class="text-sm text-gray-400">Trọn Vẹn Nghĩa Tình</p>
-                        </div>
-                    </div>
-                    <p class="text-gray-400 mb-4">
-                        Đồng hành cùng gia đình trong giây phút khó khăn với dịch vụ tang lễ chuyên nghiệp và tận tâm.
-                    </p>
-                    <div class="flex space-x-4">
-                        <a href="tel:0785877755" class="text-gold hover:text-yellow-300 touch-target" aria-label="Gọi điện">
-                            <i class="fab fa-facebook text-xl"></i>
-                        </a>
-                        <a href="mailto:tangleyenbinh@gmail.com" class="text-gold hover:text-yellow-300 touch-target" aria-label="Email">
-                            <i class="fab fa-youtube text-xl"></i>
-                        </a>
-                        <a href="#" class="text-gold hover:text-yellow-300 touch-target" aria-label="Zalo">
-                            <i class="fab fa-facebook-messenger text-xl"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <div>
-                    <h4 class="text-lg font-semibold mb-4 text-gold">Dịch Vụ</h4>
-                    <ul class="space-y-2 text-gray-400">
-                        <li><a href="#services" class="hover:text-gold transition-colors">Tang lễ - An táng</a></li>
-                        <li><a href="#services" class="hover:text-gold transition-colors">Tang lễ - Hỏa táng</a></li>
-                        <li><a href="#services" class="hover:text-gold transition-colors">Dịch vụ cải táng</a></li>
-                        <li><a href="#services" class="hover:text-gold transition-colors">Tư vấn phong thủy</a></li>
-                        <li><a href="#services" class="hover:text-gold transition-colors">Thủ tục pháp lý</a></li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <h4 class="text-lg font-semibold mb-4 text-gold">Liên Hệ</h4>
-                    <div class="space-y-3 text-gray-400">
-                        <div class="flex items-center">
-                            <i class="fas fa-phone text-gold mr-3"></i>
-                            <a href="tel:0785877755" class="hover:text-gold">0785877755</a>
-                        </div>
-                        <div class="flex items-center">
-                            <i class="fas fa-envelope text-gold mr-3"></i>
-                            <a href="mailto:tangleyenbinh@gmail.com" class="hover:text-gold">tangleyenbinh@gmail.com</a>
-                        </div>
-                        <div class="flex items-start">
-                            <i class="fas fa-map-marker-alt text-gold mr-3 mt-1"></i>
-                            <span>31B Trần Phú, P. Phủ Hà, TP. Phan Rang-Tháp Chàm</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-                <p>&copy; 2024 Tang Lễ Yên Bình. Tất cả quyền được bảo lưu.</p>
-                <p class="mt-2 text-sm">Website được tối ưu cho thiết bị di động</p>
-            </div>
+    <footer class="bg-black text-center py-8">
+        <div class="container-safe">
+            <p class="text-gray-400 mb-4">© 2024 Tang Lễ Yên Bình - Trọn Vẹn Nghĩa Tình</p>
+            <p class="text-gold font-bold">Hotline 24/7: <a href="tel:0785877755" class="hover-gold focus-visible">0785877755</a></p>
         </div>
     </footer>
 
-    <!-- Back to Top Button -->
-    <div id="back-to-top" class="back-to-top" aria-label="Quay lại đầu trang">
-        <i class="fas fa-chevron-up"></i>
-    </div>
-
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    
     <script>
-        // Initialize AOS
-        AOS.init({
-            duration: 800,
-            easing: 'ease-in-out',
-            once: true,
-            offset: 100
-        });
-
-        // Mobile Menu Toggle
+        // Mobile menu toggle - No animations, immediate response
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
-        const mobileMenuClose = document.getElementById('mobile-menu-close');
-
-        function toggleMobileMenu() {
+        
+        mobileMenuBtn.addEventListener('click', function() {
             mobileMenu.classList.toggle('active');
-            document.body.classList.toggle('overflow-hidden');
-            
-            // Update aria-expanded
-            const isOpen = mobileMenu.classList.contains('active');
-            mobileMenuBtn.setAttribute('aria-expanded', isOpen);
-        }
-
-        mobileMenuBtn.addEventListener('click', toggleMobileMenu);
-        mobileMenuClose.addEventListener('click', toggleMobileMenu);
-
+        });
+        
         // Close mobile menu when clicking on links
-        const mobileMenuLinks = mobileMenu.querySelectorAll('a[href^="#"]');
-        mobileMenuLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                toggleMobileMenu();
+        const menuLinks = mobileMenu.querySelectorAll('a');
+        menuLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                mobileMenu.classList.remove('active');
             });
         });
-
-        // Sticky Header
-        const header = document.getElementById('header');
-        let lastScrollTop = 0;
-
-        window.addEventListener('scroll', () => {
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            
-            if (scrollTop > 100) {
-                header.classList.add('header-sticky');
-            } else {
-                header.classList.remove('header-sticky');
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                mobileMenu.classList.remove('active');
             }
-            
-            lastScrollTop = scrollTop;
         });
-
-        // Smooth Scrolling for anchor links
+        
+        // Smooth scroll for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
-                    const headerHeight = header.offsetHeight;
-                    const targetPosition = target.offsetTop - headerHeight - 20;
-                    
-                    window.scrollTo({
-                        top: targetPosition,
-                        behavior: 'smooth'
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
                     });
                 }
             });
         });
-
-        // Back to Top Button
-        const backToTopBtn = document.getElementById('back-to-top');
-
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
-                backToTopBtn.classList.add('visible');
-            } else {
-                backToTopBtn.classList.remove('visible');
-            }
-        });
-
-        backToTopBtn.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-
-        // Lazy Loading Images
-        const lazyImages = document.querySelectorAll('img[data-src]');
         
-        const imageObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    img.src = img.dataset.src;
-                    img.classList.add('loaded');
-                    img.removeAttribute('data-src');
-                    observer.unobserve(img);
-                }
-            });
-        }, {
-            rootMargin: '50px 0px',
-            threshold: 0.01
-        });
-
-        lazyImages.forEach(img => {
-            imageObserver.observe(img);
-        });
-
-        // Initialize Gallery Swiper for Mobile
-        const gallerySwiper = new Swiper('.gallery-swiper', {
-            slidesPerView: 1,
-            spaceBetween: 20,
-            centeredSlides: true,
-            loop: true,
-            autoplay: {
-                delay: 3000,
-                disableOnInteraction: false,
-            },
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true,
-            },
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-            },
-            breakpoints: {
-                640: {
-                    slidesPerView: 1.2,
-                },
-            }
-        });
-
-        // Touch Gesture Optimization
-        let touchStartX = null;
-        let touchStartY = null;
-
-        document.addEventListener('touchstart', e => {
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
-        }, { passive: true });
-
-        document.addEventListener('touchmove', e => {
-            if (!touchStartX || !touchStartY) return;
-
-            const touchEndX = e.touches[0].clientX;
-            const touchEndY = e.touches[0].clientY;
-
-            const diffX = touchStartX - touchEndX;
-            const diffY = touchStartY - touchEndY;
-
-            // Horizontal swipe detection for mobile menu
-            if (Math.abs(diffX) > Math.abs(diffY)) {
-                if (diffX > 50 && mobileMenu.classList.contains('active')) {
-                    // Swipe left to close menu
-                    toggleMobileMenu();
-                }
-            }
-        }, { passive: true });
-
-        // Performance Optimization
-        let ticking = false;
-
-        function updateScrollRelatedElements() {
-            // Update header, back-to-top, etc.
-            const scrollTop = window.pageYOffset;
-            
-            // Update back to top visibility
-            if (scrollTop > 300) {
-                backToTopBtn.classList.add('visible');
-            } else {
-                backToTopBtn.classList.remove('visible');
-            }
-            
-            // Update header
-            if (scrollTop > 100) {
-                header.classList.add('header-sticky');
-            } else {
-                header.classList.remove('header-sticky');
-            }
-            
-            ticking = false;
+        // Prevent zoom on input focus (mobile)
+        const viewportMeta = document.querySelector('meta[name="viewport"]');
+        if (viewportMeta) {
+            viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
         }
-
-        window.addEventListener('scroll', () => {
-            if (!ticking) {
-                requestAnimationFrame(updateScrollRelatedElements);
-                ticking = true;
-            }
-        }, { passive: true });
-
-        // Form Enhancement (if needed in future)
-        const forms = document.querySelectorAll('form');
-        forms.forEach(form => {
-            form.addEventListener('submit', function(e) {
-                const inputs = form.querySelectorAll('input[required], textarea[required]');
-                let isValid = true;
-                
-                inputs.forEach(input => {
-                    if (!input.value.trim()) {
-                        input.classList.add('border-red-500');
-                        isValid = false;
-                    } else {
-                        input.classList.remove('border-red-500');
-                    }
-                });
-                
-                if (!isValid) {
-                    e.preventDefault();
-                }
-            });
-        });
-
-        // Accessibility Improvements
-        document.addEventListener('keydown', function(e) {
-            // ESC key to close mobile menu
-            if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
-                toggleMobileMenu();
-            }
-            
-            // Tab navigation improvements
-            if (e.key === 'Tab') {
-                document.body.classList.add('keyboard-navigation');
-            }
-        });
-
-        document.addEventListener('mousedown', function() {
-            document.body.classList.remove('keyboard-navigation');
-        });
-
-        // Preload critical images
-        const criticalImages = [
-            'https://page1.genspark.site/v1/base64_upload/ebe6f7de4d8a1b4044b6f3afea8635ba',
-            'https://page1.genspark.site/v1/base64_upload/ec939ed68c137035688e12c76af26b57'
-        ];
-
-        criticalImages.forEach(src => {
-            const img = new Image();
-            img.src = src;
-        });
-
-        // Error Handling for failed image loads
-        document.addEventListener('error', function(e) {
-            if (e.target.tagName === 'IMG') {
-                e.target.style.display = 'none';
-                console.warn('Failed to load image:', e.target.src);
-            }
-        }, true);
-
-        // Loading Performance Monitoring
-        window.addEventListener('load', function() {
-            const loadTime = performance.now();
-            console.log(`Page loaded in ${Math.round(loadTime)}ms`);
-            
-            // Remove loading states
-            document.querySelectorAll('.loading-skeleton').forEach(el => {
-                el.classList.remove('loading-skeleton');
-            });
-        });
     </script>
 </body>
 </html>
