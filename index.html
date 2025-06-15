@@ -14,13 +14,17 @@
         .z-call-button { z-index: 998; }
         .z-modal { z-index: 1001; }
         
-        /* NO ANIMATIONS - Static, respectful design */
+        /* Minimal animations - Static, respectful design */
         * {
             transition: none !important;
             animation: none !important;
         }
         
-        /* Only essential hover states for desktop */
+        /* Only essential menu slide and hover states */
+        .mobile-menu {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        
         @media (hover: hover) {
             .hover-gold:hover { color: #b8860b; }
             .hover-bg-gold:hover { background-color: #b8860b; }
@@ -50,22 +54,43 @@
             border-bottom: 1px solid #b8860b;
         }
         
-        /* Mobile menu overlay */
+        /* Mobile menu overlay - SLIDE FROM RIGHT */
         .mobile-menu {
             position: fixed;
             top: 0;
-            left: -100%;
+            right: -300px; /* Hidden on right side */
             width: 280px;
             height: 100vh;
-            background: #1a1a1a;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
             padding-top: 80px;
+            transform: translateX(0);
         }
         
         .mobile-menu.active {
-            left: 0;
+            right: 0; /* Slide in from right */
         }
         
-        /* Hamburger menu - always accessible */
+        /* Menu backdrop overlay */
+        .menu-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease !important;
+        }
+        
+        .menu-backdrop.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Hamburger menu - RIGHT SIDE */
         .hamburger {
             display: flex;
             flex-direction: column;
@@ -81,6 +106,20 @@
             width: 100%;
             background: #b8860b;
             margin-bottom: 4px;
+        }
+        
+        /* Close button for mobile menu */
+        .menu-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: none;
+            border: none;
+            color: #b8860b;
+            font-size: 24px;
+            cursor: pointer;
         }
         
         /* Call button positioning - never overlaps menu */
@@ -113,6 +152,27 @@
             gap: 20px;
         }
         
+        /* Cemetery gallery grid - 2 columns mobile, 3-4 desktop */
+        .cemetery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        
+        @media (min-width: 768px) {
+            .cemetery-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .cemetery-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 24px;
+            }
+        }
+        
         /* Pricing grid */
         .pricing-grid {
             display: grid;
@@ -129,6 +189,10 @@
                 grid-template-columns: 1fr;
                 gap: 16px;
             }
+            .cemetery-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
         }
         
         /* Image aspect ratio maintained */
@@ -142,6 +206,24 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+        
+        .cemetery-item {
+            aspect-ratio: 4/3;
+            overflow: hidden;
+            border-radius: 8px;
+            background: #1f2937;
+        }
+        
+        .cemetery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease !important;
+        }
+        
+        .cemetery-item:hover img {
+            transform: scale(1.05);
         }
         
         /* Content spacing system - 8px grid */
@@ -234,6 +316,9 @@
 </head>
 <body class="bg-gray-900 text-white">
 
+    <!-- Menu Backdrop -->
+    <div id="menu-backdrop" class="menu-backdrop z-menu-overlay"></div>
+
     <!-- Fixed Header - Z-index 1000 -->
     <header class="header-fixed z-header">
         <div class="container-safe">
@@ -247,13 +332,6 @@
                     </div>
                 </div>
                 
-                <!-- Mobile Menu Button - Always accessible -->
-                <button id="mobile-menu-btn" class="hamburger touch-target focus-visible" aria-label="Mở menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-                
                 <!-- Desktop Navigation -->
                 <nav class="hidden lg:flex space-x-8">
                     <a href="#gioi-thieu" class="hover-gold focus-visible">Giới thiệu</a>
@@ -265,17 +343,28 @@
                         <i class="fas fa-phone mr-2"></i>0785877755
                     </a>
                 </nav>
+                
+                <!-- Mobile Menu Button - RIGHT SIDE -->
+                <button id="mobile-menu-btn" class="hamburger touch-target focus-visible lg:hidden" aria-label="Mở menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
         </div>
     </header>
 
-    <!-- Mobile Menu Overlay - Z-index 999 -->
+    <!-- Mobile Menu Overlay - SLIDES FROM RIGHT -->
     <nav id="mobile-menu" class="mobile-menu z-menu-overlay">
-        <div class="px-6">
+        <button id="menu-close" class="menu-close focus-visible" aria-label="Đóng menu">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="px-6 pt-4">
             <a href="#gioi-thieu" class="block py-4 border-b border-gray-700 hover-gold focus-visible">Giới thiệu</a>
             <a href="#dich-vu" class="block py-4 border-b border-gray-700 hover-gold focus-visible">Dịch vụ</a>
             <a href="#bang-gia" class="block py-4 border-b border-gray-700 hover-gold focus-visible">Bảng giá</a>
             <a href="#gallery" class="block py-4 border-b border-gray-700 hover-gold focus-visible">Hình ảnh</a>
+            <a href="#nghia-trang" class="block py-4 border-b border-gray-700 hover-gold focus-visible">Nghĩa trang</a>
             <a href="#lien-he" class="block py-4 border-b border-gray-700 hover-gold focus-visible">Liên hệ</a>
             <a href="tel:0785877755" class="block py-4 text-gold font-bold focus-visible">
                 <i class="fas fa-phone mr-2"></i>Gọi ngay: 0785877755
@@ -408,30 +497,133 @@
             </div>
         </section>
 
+        <!-- HỆ THỐNG NGHĨA TRANG TƯ NHÂN Section -->
+        <section id="nghia-trang" class="bg-gray-800 section-padding">
+            <div class="container-safe">
+                <h2 class="text-section font-bold text-gold mb-4 text-center">HỆ THỐNG NGHĨA TRANG TƯ NHÂN</h2>
+                <p class="text-center text-gray-300 mb-8">Nghĩa trang tư nhân lớn nhất tỉnh Ninh Thuận với không gian yên tĩnh, trang nghiêm</p>
+                
+                <div class="cemetery-grid">
+                    <div class="cemetery-item">
+                        <img src="https://page1.genspark.site/v1/base64_upload/95d9e1ce60f016b83251c90db07f6ed8" 
+                             alt="Nghĩa trang hiện đại với mộ trắng" 
+                             loading="lazy">
+                        <div class="p-3 bg-gray-900">
+                            <p class="text-sm text-gray-300">Khu mộ hiện đại với thiết kế trang trọng</p>
+                        </div>
+                    </div>
+                    
+                    <div class="cemetery-item">
+                        <img src="https://page1.genspark.site/v1/base64_upload/b346aca1c6ec0102e60995a50c36c1c1" 
+                             alt="Toàn cảnh nghĩa trang golden hour" 
+                             loading="lazy">
+                        <div class="p-3 bg-gray-900">
+                            <p class="text-sm text-gray-300">Toàn cảnh nghĩa trang trong ánh hoàng hôn</p>
+                        </div>
+                    </div>
+                    
+                    <div class="cemetery-item">
+                        <img src="https://page1.genspark.site/v1/base64_upload/6d0f8a1ed0e8fac3482c2579404cd483" 
+                             alt="Khu mộ phần đa dạng" 
+                             loading="lazy">
+                        <div class="p-3 bg-gray-900">
+                            <p class="text-sm text-gray-300">Khu mộ phần với thiết kế đa dạng</p>
+                        </div>
+                    </div>
+                    
+                    <div class="cemetery-item">
+                        <img src="https://page1.genspark.site/v1/base64_upload/51ec584619df0cdd620772ea7330faac" 
+                             alt="Đường nội bộ thoáng đãng" 
+                             loading="lazy">
+                        <div class="p-3 bg-gray-900">
+                            <p class="text-sm text-gray-300">Hệ thống đường nội bộ thoáng đãng</p>
+                        </div>
+                    </div>
+                    
+                    <div class="cemetery-item">
+                        <img src="https://page1.genspark.site/v1/base64_upload/330644035e15da0d8ef4fcb9803fbd41" 
+                             alt="Cảnh quan thiên nhiên xanh mát" 
+                             loading="lazy">
+                        <div class="p-3 bg-gray-900">
+                            <p class="text-sm text-gray-300">Cảnh quan thiên nhiên xanh mát</p>
+                        </div>
+                    </div>
+                    
+                    <div class="cemetery-item">
+                        <img src="https://page1.genspark.site/v1/base64_upload/bfc141324b2bb19716a9402e4693ec6e" 
+                             alt="Không gian rộng lớn với núi non" 
+                             loading="lazy">
+                        <div class="p-3 bg-gray-900">
+                            <p class="text-sm text-gray-300">Không gian rộng lớn với núi non hùng vĩ</p>
+                        </div>
+                    </div>
+                    
+                    <div class="cemetery-item">
+                        <img src="https://page1.genspark.site/v1/base64_upload/b93ac82b2b0b255400e476993308199d" 
+                             alt="Khu vực đa dạng mẫu mộ" 
+                             loading="lazy">
+                        <div class="p-3 bg-gray-900">
+                            <p class="text-sm text-gray-300">Khu vực đa dạng mẫu mộ theo yêu cầu</p>
+                        </div>
+                    </div>
+                    
+                    <div class="cemetery-item">
+                        <img src="https://page1.genspark.site/v1/base64_upload/65af12bcf77c7c8eb8c31d190af64c5c" 
+                             alt="Cổng chính Nghĩa Trang Huyện Ninh Hải" 
+                             loading="lazy">
+                        <div class="p-3 bg-gray-900">
+                            <p class="text-sm text-gray-300">Cổng chính nghĩa trang Huyện Ninh Hải</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 text-center">
+                    <h3 class="text-xl font-bold text-gold mb-4">ƯU ĐIỂM NGHĨA TRANG YÊN BÌNH</h3>
+                    <div class="grid md:grid-cols-3 gap-6 mt-6">
+                        <div class="bg-gray-900 p-4 rounded-lg">
+                            <i class="fas fa-expand-arrows-alt text-gold text-2xl mb-3"></i>
+                            <h4 class="font-bold text-white mb-2">Diện Tích Lớn Nhất</h4>
+                            <p class="text-gray-300 text-sm">Quy hoạch khoa học, đường xá thuận tiện</p>
+                        </div>
+                        <div class="bg-gray-900 p-4 rounded-lg">
+                            <i class="fas fa-leaf text-gold text-2xl mb-3"></i>
+                            <h4 class="font-bold text-white mb-2">Cảnh Quan Tự Nhiên</h4>
+                            <p class="text-gray-300 text-sm">Không gian yên tĩnh, trang nghiêm</p>
+                        </div>
+                        <div class="bg-gray-900 p-4 rounded-lg">
+                            <i class="fas fa-shield-alt text-gold text-2xl mb-3"></i>
+                            <h4 class="font-bold text-white mb-2">An Ninh 24/7</h4>
+                            <p class="text-gray-300 text-sm">Bảo vệ an toàn, thuận tiện thăm viếng</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Dịch vụ Section -->
-        <section id="dich-vu" class="bg-gray-800 section-padding">
+        <section id="dich-vu" class="bg-gray-900 section-padding">
             <div class="container-safe">
                 <h2 class="text-section font-bold text-gold mb-8 text-center">DỊCH VỤ CHUYÊN NGHIỆP</h2>
                 <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="bg-gray-900 p-6 rounded-lg text-center">
+                    <div class="bg-gray-800 p-6 rounded-lg text-center">
                         <div class="text-gold text-4xl mb-4"><i class="fas fa-church"></i></div>
                         <h3 class="text-lg font-bold text-gold mb-3">Tang Lễ - An Táng</h3>
                         <p class="text-gray-300 text-sm">8 gói dịch vụ từ cơ bản đến cao cấp, phù hợp mọi điều kiện</p>
                     </div>
                     
-                    <div class="bg-gray-900 p-6 rounded-lg text-center">
+                    <div class="bg-gray-800 p-6 rounded-lg text-center">
                         <div class="text-gold text-4xl mb-4"><i class="fas fa-fire"></i></div>
                         <h3 class="text-lg font-bold text-gold mb-3">Tang Lễ - Hỏa Táng</h3>
                         <p class="text-gray-300 text-sm">4 gói dịch vụ hỏa táng văn minh, hiện đại</p>
                     </div>
                     
-                    <div class="bg-gray-900 p-6 rounded-lg text-center">
+                    <div class="bg-gray-800 p-6 rounded-lg text-center">
                         <div class="text-gold text-4xl mb-4"><i class="fas fa-exchange-alt"></i></div>
                         <h3 class="text-lg font-bold text-gold mb-3">Dịch Vụ Cải Táng</h3>
                         <p class="text-gray-300 text-sm">4 gói cải táng chuyên nghiệp với quy trình an toàn</p>
                     </div>
                     
-                    <div class="bg-gray-900 p-6 rounded-lg text-center">
+                    <div class="bg-gray-800 p-6 rounded-lg text-center">
                         <div class="text-gold text-4xl mb-4"><i class="fas fa-hands-helping"></i></div>
                         <h3 class="text-lg font-bold text-gold mb-3">Dịch Vụ Toàn Diện</h3>
                         <p class="text-gray-300 text-sm">Thủ tục, vận chuyển, trang trí, âm nhạc, hoa...</p>
@@ -441,7 +633,7 @@
         </section>
 
         <!-- Bảng giá Section -->
-        <section id="bang-gia" class="bg-gray-900 section-padding">
+        <section id="bang-gia" class="bg-gray-800 section-padding">
             <div class="container-safe">
                 <h2 class="text-section font-bold text-gold mb-8 text-center">BẢNG GIÁ DỊCH VỤ AN TÁNG</h2>
                 <p class="text-center text-gray-300 mb-8">8 gói dịch vụ từ cơ bản đến cao cấp, phù hợp với mọi điều kiện kinh tế</p>
@@ -624,7 +816,7 @@
         </section>
 
         <!-- Gallery Section -->
-        <section id="gallery" class="bg-gray-800 section-padding">
+        <section id="gallery" class="bg-gray-900 section-padding">
             <div class="container-safe">
                 <h2 class="text-section font-bold text-gold mb-8 text-center">HÌNH ẢNH DỊCH VỤ</h2>
                 <div class="gallery-grid">
@@ -678,7 +870,7 @@
         </section>
 
         <!-- Liên hệ Section -->
-        <section id="lien-he" class="bg-gray-900 section-padding">
+        <section id="lien-he" class="bg-gray-800 section-padding">
             <div class="container-safe">
                 <h2 class="text-section font-bold text-gold mb-8 text-center">THÔNG TIN LIÊN HỆ</h2>
                 <div class="grid lg:grid-cols-2 gap-8">
@@ -730,7 +922,7 @@
         </section>
 
         <!-- Cam kết Section -->
-        <section class="bg-gray-800 section-padding">
+        <section class="bg-gray-900 section-padding">
             <div class="container-safe">
                 <h2 class="text-section font-bold text-gold mb-8 text-center">CAM KẾT DỊCH VỤ</h2>
                 <div class="grid md:grid-cols-2 gap-8">
@@ -773,26 +965,41 @@
     </footer>
 
     <script>
-        // Mobile menu toggle - No animations, immediate response
+        // Mobile menu toggle - RIGHT SIDE SLIDE
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
+        const menuBackdrop = document.getElementById('menu-backdrop');
+        const menuClose = document.getElementById('menu-close');
         
-        mobileMenuBtn.addEventListener('click', function() {
-            mobileMenu.classList.toggle('active');
-        });
+        // Open menu function
+        function openMenu() {
+            mobileMenu.classList.add('active');
+            menuBackdrop.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent body scroll
+        }
+        
+        // Close menu function  
+        function closeMenu() {
+            mobileMenu.classList.remove('active');
+            menuBackdrop.classList.remove('active');
+            document.body.style.overflow = ''; // Restore body scroll
+        }
+        
+        // Event listeners
+        mobileMenuBtn.addEventListener('click', openMenu);
+        menuClose.addEventListener('click', closeMenu);
+        menuBackdrop.addEventListener('click', closeMenu);
         
         // Close mobile menu when clicking on links
         const menuLinks = mobileMenu.querySelectorAll('a');
         menuLinks.forEach(link => {
-            link.addEventListener('click', function() {
-                mobileMenu.classList.remove('active');
-            });
+            link.addEventListener('click', closeMenu);
         });
         
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
-                mobileMenu.classList.remove('active');
+        // Close menu on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+                closeMenu();
             }
         });
         
